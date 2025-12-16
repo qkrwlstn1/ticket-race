@@ -1,3 +1,36 @@
 spring:
   application:
     name: ticketrace
+  datasource:
+    #docker 사용시 변경
+    url: jdbc:mysql://localhost:3307/test
+    username: root
+    password: test
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    disable-swagger-default-url: true
+    operationsSorter: method
+    tagsSorter: alpha
+    display-request-duration: true
+    persist-authorization: true
+
+  # 문서에 잡힐 컨트롤러 범위(선택)
+  packages-to-scan:
+    - com.jinsu.ticketrace
+  paths-to-match:
+    - /**
+    -
+jwt:
+  secret-key: b45439f38ce614823da3a34d2e06674d59a6c1c289da2e492746d19b56bdb2b88cde70f038a1dc00594b289ee9af92fd0876a2d66c621b571a8434fc23654afc
+
