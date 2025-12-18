@@ -1,7 +1,5 @@
 package com.jinsu.ticketrace.member.controller;
 
-import com.jinsu.ticketrace.global.error.GlobalException;
-import com.jinsu.ticketrace.global.exception.MemberErrorCode;
 import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
 import com.jinsu.ticketrace.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +31,5 @@ public class MemberController {
         long result = memberService.signUp(signUpRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
-    
-    @GetMapping()
-    public void asd(){}
+
 }
