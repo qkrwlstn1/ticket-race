@@ -29,9 +29,9 @@ public class MemberController {
             }
     )
     public ResponseEntity<Long> signUp(@RequestBody @Valid SignUpDTO.SignUpRequest signUpRequest){
-        throw new GlobalException(MemberErrorCode.DUPLICATE_EMAIL);
-        //long result = memberService.signUp(signUpRequest);
-        //return ResponseEntity.status(HttpStatus.CREATED).body(result);
+
+        long result = memberService.signUp(signUpRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
     
     @GetMapping()
