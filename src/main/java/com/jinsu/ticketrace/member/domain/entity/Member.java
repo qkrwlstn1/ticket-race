@@ -2,13 +2,17 @@ package com.jinsu.ticketrace.member.domain.entity;
 
 import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "member")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member {
 
     @Id

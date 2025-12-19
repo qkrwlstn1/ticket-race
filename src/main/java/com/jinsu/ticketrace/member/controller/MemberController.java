@@ -2,6 +2,7 @@ package com.jinsu.ticketrace.member.controller;
 
 import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
 import com.jinsu.ticketrace.member.service.MemberService;
+import com.jinsu.ticketrace.member.validator.MemberValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-    @PostMapping(value = "signup")
+    private final MemberValidator validator;
+
+    @PostMapping("signup")
     @Operation(
             summary = "회원가입",
             description = "회원가입 및 회원가입 성공 여부를 반환",
@@ -27,9 +30,24 @@ public class MemberController {
             }
     )
     public ResponseEntity<Long> signUp(@RequestBody @Valid SignUpDTO.SignUpRequest signUpRequest){
-
+        validator.memberDuplicateCheck(signUpRequest);
         long result = memberService.signUp(signUpRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
+
+    @GetMapping("id/{id}")
+    @Operation(
+            summary = "아이디 중복 체크",
+            description = "중복을 체크하여 회원가입 가능한 아이디인지를 반환",
+            responses ={
+                    @ApiResponse(responseCode = "200",description = "사용가능 true, 사용불가 false")//중복 조회이기 때문에 409보다는 200이 합리적이라 느낌
+            }
+        )
+    public ResponseEntity<Boolean> idCheck(@PathVariable String id){
+
+        return null;
+    }
+
+
 
 }
