@@ -35,7 +35,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @GetMapping("id/{id}")
+    @GetMapping("/id/{id}")
     @Operation(
             summary = "아이디 중복 체크",
             description = "중복을 체크하여 회원가입 가능한 아이디인지를 반환",
@@ -45,7 +45,31 @@ public class MemberController {
         )
     public ResponseEntity<Boolean> idCheck(@PathVariable String id){
 
-        return null;
+        return ResponseEntity.ok(memberService.checkId(id));
+    }
+    @GetMapping("/email/{email}")
+    @Operation(
+            summary = "이메일 중복 체크",
+            description = "중복을 체크하여 회원가입 가능한 이메일인지를 반환",
+            responses ={
+                    @ApiResponse(responseCode = "200",description = "사용가능 true, 사용불가 false")
+            }
+        )
+    public ResponseEntity<Boolean> emailCheck(@PathVariable String email){
+
+        return ResponseEntity.ok(memberService.checkEmail(email));
+    }
+    @GetMapping("/nickname/{nickname}")
+    @Operation(
+            summary = "닉네임 중복 체크",
+            description = "중복을 체크하여 회원가입 가능한 닉네임인지를 반환",
+            responses ={
+                    @ApiResponse(responseCode = "200",description = "사용가능 true, 사용불가 false")
+            }
+        )
+    public ResponseEntity<Boolean> nicknameCheck(@PathVariable String nickname){
+
+        return ResponseEntity.ok(memberService.checkNickname(nickname));
     }
 
 

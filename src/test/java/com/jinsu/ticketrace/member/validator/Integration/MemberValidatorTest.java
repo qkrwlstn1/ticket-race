@@ -24,8 +24,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(MemberValidator.class)
 class MemberValidatorTest {
 
-    @Autowired MemberRepository memberRepository;
-    @Autowired MemberValidator memberValidator;
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    MemberValidator memberValidator;
 
     @BeforeEach
     void setUp() {
@@ -68,7 +71,7 @@ class MemberValidatorTest {
                 Arguments.of("ID+EMAIL 중복",     signUpRequest("jinsu", "jinsu@naver.com", "park"), MemberErrorCode.DUPLICATE_ID),
                 Arguments.of("EMAIL+NICK 중복", signUpRequest("park", "jinsu@naver.com", "jinsu"), MemberErrorCode.DUPLICATE_EMAIL),
                 Arguments.of("EMAIL 중복",      signUpRequest("park", "jinsu@naver.com", "park"), MemberErrorCode.DUPLICATE_EMAIL),
-                Arguments.of("NICK 중복",     signUpRequest("park", "park@naver.com", "park"), MemberErrorCode.DUPLICATE_NICKNAME)
+                Arguments.of("NICK 중복",     signUpRequest("park", "park@naver.com", "jinsu"), MemberErrorCode.DUPLICATE_NICKNAME)
         );
     }
 

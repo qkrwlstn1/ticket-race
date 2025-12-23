@@ -16,14 +16,30 @@ public class MemberService {
 
     //회원 가입
     @Transactional
-    public long signUp(SignUpDTO.SignUpRequest signUpRequest){
+    public long signUp(SignUpDTO.SignUpRequest signUpRequest) {
         String encodedPassword = passwordEncoding(signUpRequest.getPassword());
         Member member = Member.of(signUpRequest, encodedPassword);
 
         return memberRepository.save(member).getMemberPk();
     }
 
-    public String passwordEncoding(String password){
+    //id 중복 체크
+    @Transactional
+    public boolean checkId(String id) {
+        return !memberRepository.existsById(id);
+    }
+    //email 중복 체크
+    @Transactional
+    public boolean checkEmail(String email) {
+        return !memberRepository.existsByEmail(email);
+    }
+    //nickname 중복 체크
+    @Transactional
+    public boolean checkNickname(String nickname) {
+        return !memberRepository.existsByNickname(nickname);
+    }
+
+    public String passwordEncoding(String password) {
         return passwordEncoder.encode(password);
     }
 
