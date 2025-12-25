@@ -1,5 +1,6 @@
 package com.jinsu.ticketrace.member.domain.entity;
 
+import com.jinsu.ticketrace.auth.domain.entity.RefreshToken;
 import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,8 +21,8 @@ public class Member {
     @Column(name = "member_pk", nullable = false)
     private long memberPk;
 
-    @Column(name = "id", unique = true)
-    private String id;
+    @Column(name = "member_id", unique = true)
+    private String memberId;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -41,7 +42,7 @@ public class Member {
             , String encodedPassword
     ){
         return Member.builder()
-                .id(signUpRequest.getId())
+                .memberId(signUpRequest.getId())
                 .password(encodedPassword)
                 .email(signUpRequest.getEmail())
                 .nickname(signUpRequest.getNickname())

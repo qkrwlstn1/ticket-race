@@ -35,7 +35,7 @@ class MemberServiceTest {
     @BeforeEach
     void setUp() {
         memberRepository.save(Member.builder()
-                .id("jinsu")
+                .memberId("jinsu")
                 .email("jinsu@naver.com")
                 .nickname("jinsu")
                 .build()
@@ -55,7 +55,7 @@ class MemberServiceTest {
 
         //when
         memberService.signUp(dto);
-        Optional<Member> result = memberRepository.findByIdOrEmailOrNickname(dto.getId(), dto.getEmail(), dto.getNickname());
+        Optional<Member> result = memberRepository.findByMemberIdOrEmailOrNickname(dto.getId(), dto.getEmail(), dto.getNickname());
         //then
         assertFalse(result.isEmpty());
     }

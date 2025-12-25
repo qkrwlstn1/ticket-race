@@ -24,17 +24,17 @@ public class MemberService {
     }
 
     //id 중복 체크
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean checkId(String id) {
-        return !memberRepository.existsById(id);
+        return !memberRepository.existsByMemberId(id);
     }
     //email 중복 체크
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean checkEmail(String email) {
         return !memberRepository.existsByEmail(email);
     }
     //nickname 중복 체크
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean checkNickname(String nickname) {
         return !memberRepository.existsByNickname(nickname);
     }

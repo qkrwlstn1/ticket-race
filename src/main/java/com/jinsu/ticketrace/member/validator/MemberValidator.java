@@ -21,13 +21,13 @@ public class MemberValidator {
     //id, email, nickname 중복체크
     public void memberDuplicateCheck(SignUpDTO.SignUpRequest request){
         Optional<Member> member =memberRepository
-                .findByIdOrEmailOrNickname(
+                .findByMemberIdOrEmailOrNickname(
                         request.getId(), request.getEmail(), request.getNickname()
                 );
         if(member.isEmpty()) return;
         Member dupMember = member.get();
 
-        String id = dupMember.getId();
+        String id = dupMember.getMemberId();
         String email = dupMember.getEmail();
         String nickname = dupMember.getNickname();
 

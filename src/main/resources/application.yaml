@@ -10,6 +10,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 springdoc:
   api-docs:
@@ -33,4 +37,9 @@ springdoc:
     -
 jwt:
   secret-key: b45439f38ce614823da3a34d2e06674d59a6c1c289da2e492746d19b56bdb2b88cde70f038a1dc00594b289ee9af92fd0876a2d66c621b571a8434fc23654afc
+  issuer: ticketrace
+  access-minutes: 15
+  refresh-days: 1
+
+
 
