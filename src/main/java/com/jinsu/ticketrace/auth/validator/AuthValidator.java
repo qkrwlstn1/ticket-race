@@ -15,10 +15,8 @@ public class AuthValidator {
     private final PasswordEncoder encoder;
 
     public Member memberCheck(String id, String password){
-        System.out.println("id : "+id +"\npass : "+password);
         Member member = memberRepository.findByMemberId(id)
                 .orElseThrow(() -> new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND));
-        System.out.println("id : " + member.getMemberId() + "\npass : " + member.getPassword());
         if(!encoder.matches(password, member.getPassword())) throw new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND);
 
         return member;

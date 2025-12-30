@@ -53,6 +53,7 @@ public class JwtTokenProvider {
 
     public Claims parseAndValidate(String jwt){
         return Jwts.parser()
+                .requireIssuer(issuer)
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(jwt)

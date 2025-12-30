@@ -34,7 +34,6 @@ public class authController {
             }
     )
     public ResponseEntity<AuthService.TokenResponse> signin(@RequestBody SignInDTO.signInRequest user){
-        System.out.println(user.toString());
         Member member =  validator.memberCheck(user.getId(), user.getPassword());
         return ResponseEntity.ok(authService.signIn(member));
     }
