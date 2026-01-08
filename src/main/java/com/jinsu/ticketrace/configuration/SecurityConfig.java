@@ -3,6 +3,7 @@ package com.jinsu.ticketrace.configuration;
 
 import com.jinsu.ticketrace.auth.jwt.JwtAuthenticationFilter;
 import com.jinsu.ticketrace.auth.jwt.JwtTokenProvider;
+import com.jinsu.ticketrace.auth.repository.redis.AccessTokenBlacklistStore;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,13 +67,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider tokenProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider tokenProvider, AccessTokenBlacklistStore accessTokenBlacklistStore) throws Exception {
         http.csrf(csrf -> csrf.disable());
         http.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                        "/auth/**",
+                        "/auth/signin",
                         "/members/signup",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
@@ -81,7 +82,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
         );
 
-        http.addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(tokenProvider, accessTokenBlacklistStore), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -1,4 +1,4 @@
-package com.jinsu.ticketrace.auth.repository;
+package com.jinsu.ticketrace.auth.repository.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

@@ -1,4 +1,4 @@
-package com.jinsu.ticketrace.auth.repository;
+package com.jinsu.ticketrace.auth.repository.redis;
 
 import java.time.Duration;
 import java.util.Optional;

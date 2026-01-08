@@ -4,16 +4,13 @@ import com.jinsu.ticketrace.auth.domain.DTO.SignInDTO;
 import com.jinsu.ticketrace.auth.service.AuthService;
 import com.jinsu.ticketrace.auth.validator.AuthValidator;
 import com.jinsu.ticketrace.member.domain.entity.Member;
-import com.jinsu.ticketrace.member.validator.MemberValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("auth")
@@ -39,7 +36,29 @@ public class authController {
     }
 
     //토큰 재발급
+    @GetMapping("/test")
+    String test(){
+        return "good";
+    }
+
+
 
     //로그아웃
+    @PostMapping("logout")
+    @Operation(
+            summary = "로그아웃",
+            description = "refresh token 삭제",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "로그아웃 성공")
+            }
+    )
+    public ResponseEntity<Void> logout(Authentication authentication){
+        long memberPk = Long.parseLong(authentication.getName());
+        String accessToken = authentication.getCredentials() instanceof String credential
+                ? credential
+                : null;
+        authService.logout(memberPk, accessToken);
+        return ResponseEntity.noContent().build();
+    }
 
 }

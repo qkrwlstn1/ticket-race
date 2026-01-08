@@ -1,26 +1,28 @@
 package com.jinsu.ticketrace.auth.jwt;
 
+import com.jinsu.ticketrace.auth.repository.redis.AccessTokenBlacklistStore;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
+    private final AccessTokenBlacklistStore accessTokenBlacklistStore;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -31,19 +33,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         String token = auth.substring("Bearer ".length());
+        log.info("access token = {}",token);
+        try {
+            if(accessTokenBlacklistStore.isBlacklisted(token)) throw new JwtException("blacklisted access token");
 
-        try{
             Claims claims = tokenProvider.parseAndValidate(token);
 
             String typ = claims.get("typ", String.class);
-            if(!"access".equals(typ)) throw new JwtException("not access token");
+            if (!"access".equals(typ)) throw new JwtException("not access token");
             // subject = memberPk
             String memberPk = claims.getSubject();
-
-
-            var authentication = new UsernamePasswordAuthenticationToken(memberPk, null);
+            log.info("memberPk = {}", memberPk);
+            log.info(request.getRequestURI());
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(memberPk, token, List.of());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
             filterChain.doFilter(request, response);
         }catch (JwtException e) {
             SecurityContextHolder.clearContext();
