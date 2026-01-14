@@ -1,4 +1,4 @@
-package com.jinsu.ticketrace.member.validator.Integration;
+package com.jinsu.ticketrace.member.validator.unit;
 
 import com.jinsu.ticketrace.global.error.GlobalException;
 import com.jinsu.ticketrace.global.exception.MemberErrorCode;
