@@ -2,7 +2,6 @@ package com.jinsu.ticketrace.auth.jwt;
 
 import com.jinsu.ticketrace.auth.repository.redis.AccessTokenBlacklistStore;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

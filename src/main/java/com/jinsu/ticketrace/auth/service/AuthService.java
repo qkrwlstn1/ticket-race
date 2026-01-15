@@ -1,15 +1,11 @@
 package com.jinsu.ticketrace.auth.service;
 
 import com.jinsu.ticketrace.auth.jwt.JwtTokenProvider;
-import com.jinsu.ticketrace.auth.repository.redis.RefreshTokenStore;
 import com.jinsu.ticketrace.auth.repository.redis.AccessTokenBlacklistStore;
+import com.jinsu.ticketrace.auth.repository.redis.RefreshTokenStore;
 import com.jinsu.ticketrace.member.domain.entity.Member;
-import com.jinsu.ticketrace.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
