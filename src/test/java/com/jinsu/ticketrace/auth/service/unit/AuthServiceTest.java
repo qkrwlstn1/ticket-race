@@ -76,4 +76,21 @@ class AuthServiceTest {
         assertTrue(durationCaptor.getValue().compareTo(Duration.ZERO) > 0);
     }
 
+    @Test
+    @DisplayName("refresh token 재발급은 새로운 토큰을 반환하고 refresh token을 저장해야 한다")
+    void reissue_should_return_new_tokens_and_store_refresh_token(){
+        JwtTokenProvider.RefreshTokenBundle refreshTokenBundle =
+                new JwtTokenProvider.RefreshTokenBundle("new-refresh-token",Duration.ofHours(2));
+
+        when(jwtTokenProvider.createAccessToken(1L)).thenReturn("new-access-token");
+        when(jwtTokenProvider.createRefreshToken(1L)).thenReturn(refreshTokenBundle);
+
+        AuthService.TokenResponse response = authService.reissue("old-refresh-token", 1L);
+
+        assertEquals("new-access-token", response.accessToken());
+        assertEquals("new-refresh-token", response.refreshToken());
+        verify(refreshTokenStore).save(1L, "new-refresh-token", Duration.ofHours(2));
+        verify(refreshTokenStore, never()).delete(anyLong());
+    }
+
 }
