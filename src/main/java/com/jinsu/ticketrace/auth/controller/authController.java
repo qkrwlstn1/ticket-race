@@ -1,6 +1,7 @@
 package com.jinsu.ticketrace.auth.controller;
 
 import com.jinsu.ticketrace.auth.domain.DTO.SignInDTO;
+import com.jinsu.ticketrace.auth.domain.DTO.TokenReissueDTO;
 import com.jinsu.ticketrace.auth.service.AuthService;
 import com.jinsu.ticketrace.auth.validator.AuthValidator;
 import com.jinsu.ticketrace.member.domain.entity.Member;
@@ -36,9 +37,18 @@ public class authController {
     }
 
     //토큰 재발급
-    @GetMapping("/test")
-    String test(){
-        return "good";
+    @PostMapping("reissue")
+    @Operation(
+            summary = "토큰 재발급",
+            description = "refresh token 검증 후 accessToken + refreshToken 재발급",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "재발급 성공"),
+                    @ApiResponse(responseCode = "401", description = "refresh token 만료 / 유효하지 않음")
+            }
+    )
+    public ResponseEntity<AuthService.TokenResponse> reissue(@RequestBody TokenReissueDTO.ReissueRequest request){
+        long memberPk = validator.validateRefreshToken(request.getRefreshToken());
+        return ResponseEntity.ok(authService.reissue(request.getRefreshToken() ,memberPk));
     }
 
 

@@ -6,7 +6,9 @@ import com.jinsu.ticketrace.auth.repository.redis.AccessTokenBlacklistStore;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +52,14 @@ public class AuthService {
         }catch (Exception ignored){
 
         }
+    }
+
+    public TokenResponse reissue(String refreshToken, long memberPk) {
+        String accessToken = jwtTokenProvider.createAccessToken(memberPk);
+        JwtTokenProvider.RefreshTokenBundle refreshTokenBundle = jwtTokenProvider.createRefreshToken(memberPk);
+        refreshTokenStore.save(memberPk, refreshTokenBundle.token, refreshTokenBundle.ttl);
+
+        return new TokenResponse(accessToken, refreshTokenBundle.token);
     }
 
     public record TokenResponse(String accessToken, String refreshToken) {}

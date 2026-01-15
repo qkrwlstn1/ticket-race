@@ -26,18 +26,6 @@ import java.util.Map;
 @Configuration
 public class SecurityConfig {
 
-//    @Bean
-//    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .formLogin(AbstractHttpConfigurer::disable)
-//                .httpBasic(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll()
-//                );
-//
-//        return http.build();
-//    }
 
 
     //패스워드 인코딩 설정
@@ -74,6 +62,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/auth/signin",
+                        "/auth/reissue",
                         "/members/signup",
                         "/swagger-ui/**",
                         "/swagger-ui.html",

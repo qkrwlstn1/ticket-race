@@ -54,7 +54,7 @@ class AuthServiceTest {
         AuthService.TokenResponse response = authService.signIn(member);
         assertEquals("access-token", response.accessToken());
         assertEquals("refresh-token", response.refreshToken());
-        verify(refreshTokenStore).save(1L, "refresh-token", Duration.ofDays(2));
+        verify(refreshTokenStore).save(1L, "refresh-token", Duration.ofDays(1));
 
 
     }
