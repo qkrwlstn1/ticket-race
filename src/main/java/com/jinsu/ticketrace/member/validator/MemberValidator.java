@@ -6,17 +6,18 @@ import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Transactional
+@Transactional(readOnly = true)
 @Component
 @RequiredArgsConstructor
 public class MemberValidator {
     private final MemberRepository memberRepository;
-
+    private final PasswordEncoder encoder;
 
     //id, email, nickname 중복체크
     public void memberDuplicateCheck(SignUpDTO.SignUpRequest request){
@@ -40,5 +41,21 @@ public class MemberValidator {
     }
 
     //비밀번호 체크
+    public Member memberPasswordCheck(long memberPk, String password){
+        Optional<Member> optionalMember = memberRepository.findById(memberPk);
+        Member member = optionalMember.orElseThrow(() -> new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND));
+        if(!encoder.matches(password, member.getPassword())) throw new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND);
+        return member;
+    }
+
+    public void memberEmailCheck(String email){
+        if(memberRepository.existsByEmail(email)) throw new GlobalException(MemberErrorCode.DUPLICATE_EMAIL);
+    }
+    public void memberIdCheck(String id){
+        if(memberRepository.existsByMemberId(id)) throw new GlobalException(MemberErrorCode.DUPLICATE_ID);
+    }
+    public void memberNicknameCheck(String nickname){
+        if(memberRepository.existsByNickname(nickname)) throw new GlobalException(MemberErrorCode.DUPLICATE_NICKNAME);
+    }
 
 }

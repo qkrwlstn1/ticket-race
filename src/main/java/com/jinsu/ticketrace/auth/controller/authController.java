@@ -31,7 +31,7 @@ public class authController {
             description = "유효한 회원인지 검증 후 accessToken + refreshToken 발급",
             responses = {
                     @ApiResponse(responseCode = "200", description = "로그인 성공"),
-                    @ApiResponse(responseCode = "401", description = "아이디, 비밀번호 확인 필요")
+                    @ApiResponse(responseCode = "404", description = "아이디, 비밀번호 확인 필요")
             }
     )
     public ResponseEntity<AuthService.TokenResponse> signin(@RequestBody SignInDTO.signInRequest user){

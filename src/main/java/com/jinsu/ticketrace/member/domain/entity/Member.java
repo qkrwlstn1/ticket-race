@@ -48,4 +48,7 @@ public class Member {
                 .nickname(signUpRequest.getNickname())
                 .build();
     }
+    public void modifyNickname(String nickname){
+        this.nickname = nickname;
+    }
 }

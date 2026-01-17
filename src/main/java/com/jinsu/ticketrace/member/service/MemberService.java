@@ -1,8 +1,11 @@
 package com.jinsu.ticketrace.member.service;
 
+import com.jinsu.ticketrace.global.error.GlobalException;
+import com.jinsu.ticketrace.global.exception.MemberErrorCode;
 import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.member.repository.MemberRepository;
+import com.jinsu.ticketrace.member.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final MemberValidator memberValidator;
     //회원 가입
     @Transactional
     public long signUp(SignUpDTO.SignUpRequest signUpRequest) {
@@ -23,24 +26,16 @@ public class MemberService {
         return memberRepository.save(member).getMemberPk();
     }
 
-    //id 중복 체크
-    @Transactional(readOnly = true)
-    public boolean checkId(String id) {
-        return !memberRepository.existsByMemberId(id);
-    }
-    //email 중복 체크
-    @Transactional(readOnly = true)
-    public boolean checkEmail(String email) {
-        return !memberRepository.existsByEmail(email);
-    }
-    //nickname 중복 체크
-    @Transactional(readOnly = true)
-    public boolean checkNickname(String nickname) {
-        return !memberRepository.existsByNickname(nickname);
-    }
 
     public String passwordEncoding(String password) {
         return passwordEncoder.encode(password);
     }
 
+    @Transactional
+    public void modifyInfo(String nickname, long memberPk) {
+        memberValidator.memberNicknameCheck(nickname);
+        Member member = memberRepository.findById(memberPk).orElseThrow(() -> new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        member.modifyNickname(nickname);
+    }
 }

@@ -2,6 +2,7 @@ package com.jinsu.ticketrace.member.service.uint;
 
 import com.jinsu.ticketrace.member.repository.MemberRepository;
 import com.jinsu.ticketrace.member.service.MemberService;
+import com.jinsu.ticketrace.member.validator.MemberValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -24,6 +25,8 @@ class MemberServiceTest {
 
     @Mock
     MemberRepository memberRepository; // DB 접근 차단(목 객체)
+    @Mock
+    MemberValidator memberValidator;
 
     PasswordEncoder passwordEncoder;
     MemberService memberService;
@@ -37,7 +40,7 @@ class MemberServiceTest {
         encoders.put(idForEncode, new BCryptPasswordEncoder(4)); // 테스트 환경에선 cost를 의도적으로 낮춤(최소 4)
 
         passwordEncoder = new DelegatingPasswordEncoder(idForEncode, encoders);
-        memberService = new MemberService(memberRepository, passwordEncoder);
+        memberService = new MemberService(memberRepository, passwordEncoder, memberValidator);
     }
 
 
