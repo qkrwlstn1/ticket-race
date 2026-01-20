@@ -111,6 +111,24 @@ public class MemberController {
 
     }
 
+    @DeleteMapping("me")
+    @Operation(
+            summary = "회원 탈퇴",
+            description = "비밀번호를 재확인 후 회원 삭제",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "삭제 성공"),
+                    @ApiResponse(responseCode = "404", description = "비밀번호 틀림")
+            }
+    )
+    public void deleteMember(@RequestBody MemberDTO.password password, Authentication authentication){
+        long memberPk = Long.parseLong(authentication.getName());
+        String accessToken = authentication.getCredentials() instanceof String credential
+                ? credential : null;
+        Member member = memberValidator.memberPasswordCheck(memberPk, password.getPassword());
+
+        memberService.deleteMember(member, accessToken);
+    }
+
 
 
 }

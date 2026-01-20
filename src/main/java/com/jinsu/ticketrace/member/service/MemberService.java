@@ -1,5 +1,7 @@
 package com.jinsu.ticketrace.member.service;
 
+import com.jinsu.ticketrace.auth.repository.redis.AccessTokenBlacklistStore;
+import com.jinsu.ticketrace.auth.service.AuthService;
 import com.jinsu.ticketrace.global.error.GlobalException;
 import com.jinsu.ticketrace.global.exception.MemberErrorCode;
 import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
@@ -17,6 +19,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberValidator memberValidator;
+    private final AuthService authService;
+
     //회원 가입
     @Transactional
     public long signUp(SignUpDTO.SignUpRequest signUpRequest) {
@@ -37,5 +41,11 @@ public class MemberService {
         Member member = memberRepository.findById(memberPk).orElseThrow(() -> new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         member.modifyNickname(nickname);
+    }
+
+    @Transactional
+    public void deleteMember(Member member,String accessToken) {
+        authService.logout(member.getMemberPk(), accessToken);
+        memberRepository.delete(member);
     }
 }

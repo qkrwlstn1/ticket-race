@@ -1,5 +1,6 @@
 package com.jinsu.ticketrace.member.service.uint;
 
+import com.jinsu.ticketrace.auth.service.AuthService;
 import com.jinsu.ticketrace.member.repository.MemberRepository;
 import com.jinsu.ticketrace.member.service.MemberService;
 import com.jinsu.ticketrace.member.validator.MemberValidator;
@@ -27,6 +28,8 @@ class MemberServiceTest {
     MemberRepository memberRepository; // DB 접근 차단(목 객체)
     @Mock
     MemberValidator memberValidator;
+    @Mock
+    AuthService authService;
 
     PasswordEncoder passwordEncoder;
     MemberService memberService;
@@ -40,7 +43,7 @@ class MemberServiceTest {
         encoders.put(idForEncode, new BCryptPasswordEncoder(4)); // 테스트 환경에선 cost를 의도적으로 낮춤(최소 4)
 
         passwordEncoder = new DelegatingPasswordEncoder(idForEncode, encoders);
-        memberService = new MemberService(memberRepository, passwordEncoder, memberValidator);
+        memberService = new MemberService(memberRepository, passwordEncoder, memberValidator, authService);
     }
 
 

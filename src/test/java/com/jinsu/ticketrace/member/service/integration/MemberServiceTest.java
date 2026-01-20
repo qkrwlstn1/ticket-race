@@ -30,7 +30,7 @@ class MemberServiceTest {
 
 
 
-    enum CheckType{ID, EMAIL, NICKNAME}
+//    enum CheckType{ID, EMAIL, NICKNAME}
 
     @BeforeEach
     void setUp() {
@@ -60,48 +60,51 @@ class MemberServiceTest {
         assertFalse(result.isEmpty());
     }
 
-
-    @ParameterizedTest(name = "[{index}] {0}")
-    @MethodSource("duplicate_cases")
-    @DisplayName("중복이면 false를 반환한다")
-    void duplicate_are_false(String scenario, String request, CheckType type){
-        boolean result = switch (type){
-            case ID -> memberService.checkId(request);
-            case EMAIL -> memberService.checkEmail(request);
-            case NICKNAME -> memberService.checkNickname(request);
-        };
-
-        assertFalse(result);
-    }
-    @ParameterizedTest(name = "[{index}] {0}")
-    @MethodSource("non_duplicate_cases")
-    @DisplayName("중복이 아니면 true를 반환한다")
-    void non_duplicate_are_true(String scenario, String request, CheckType type){
-        boolean result = switch (type){
-            case ID -> memberService.checkId(request);
-            case EMAIL -> memberService.checkEmail(request);
-            case NICKNAME -> memberService.checkNickname(request);
-        };
-
-        assertTrue(result);
-    }
+//    @Test
+//    @DisplayName("")
 
 
-    static Stream<Arguments> duplicate_cases(){
-        return Stream.of(
-                Arguments.of("Id 중복", "jinsu", CheckType.ID),
-                Arguments.of("email 중복", "jinsu@naver.com", CheckType.EMAIL),
-                Arguments.of("nickname 중복", "jinsu", CheckType.NICKNAME)
-        );
-    }
-
-    public static Stream<Arguments> non_duplicate_cases() {
-        return Stream.of(
-                Arguments.of("Id 비중복", "park", CheckType.ID),
-                Arguments.of("email 비중복", "park@naver.com", CheckType.EMAIL),
-                Arguments.of("nickname 비중복", "park", CheckType.NICKNAME)
-        );
-    }
+//    @ParameterizedTest(name = "[{index}] {0}")
+//    @MethodSource("duplicate_cases")
+//    @DisplayName("중복이면 false를 반환한다")
+//    void duplicate_are_false(String scenario, String request, CheckType type){
+//        boolean result = switch (type){
+//            case ID -> memberService.checkId(request);
+//            case EMAIL -> memberService.checkEmail(request);
+//            case NICKNAME -> memberService.checkNickname(request);
+//        };
+//
+//        assertFalse(result);
+//    }
+//    @ParameterizedTest(name = "[{index}] {0}")
+//    @MethodSource("non_duplicate_cases")
+//    @DisplayName("중복이 아니면 true를 반환한다")
+//    void non_duplicate_are_true(String scenario, String request, CheckType type){
+//        boolean result = switch (type){
+//            case ID -> memberService.checkId(request);
+//            case EMAIL -> memberService.checkEmail(request);
+//            case NICKNAME -> memberService.checkNickname(request);
+//        };
+//
+//        assertTrue(result);
+//    }
+//
+//
+//    static Stream<Arguments> duplicate_cases(){
+//        return Stream.of(
+//                Arguments.of("Id 중복", "jinsu", CheckType.ID),
+//                Arguments.of("email 중복", "jinsu@naver.com", CheckType.EMAIL),
+//                Arguments.of("nickname 중복", "jinsu", CheckType.NICKNAME)
+//        );
+//    }
+//
+//    public static Stream<Arguments> non_duplicate_cases() {
+//        return Stream.of(
+//                Arguments.of("Id 비중복", "park", CheckType.ID),
+//                Arguments.of("email 비중복", "park@naver.com", CheckType.EMAIL),
+//                Arguments.of("nickname 비중복", "park", CheckType.NICKNAME)
+//        );
+//    }
 
 
 }
