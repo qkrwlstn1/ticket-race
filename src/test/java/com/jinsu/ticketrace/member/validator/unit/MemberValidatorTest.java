@@ -15,6 +15,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.stream.Stream;
 
@@ -26,6 +28,9 @@ class MemberValidatorTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @MockitoBean
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     MemberValidator memberValidator;
