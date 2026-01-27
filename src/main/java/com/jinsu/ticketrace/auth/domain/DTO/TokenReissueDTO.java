@@ -1,6 +1,6 @@
 package com.jinsu.ticketrace.auth.domain.DTO;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +13,7 @@ public class TokenReissueDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ReissueRequest{
-        @NotEmpty
+        @NotBlank
         private String refreshToken;
     }
 

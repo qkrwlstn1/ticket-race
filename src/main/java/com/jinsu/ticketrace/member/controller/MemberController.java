@@ -1,6 +1,5 @@
 package com.jinsu.ticketrace.member.controller;
 
-import com.jinsu.ticketrace.auth.validator.AuthValidator;
 import com.jinsu.ticketrace.member.domain.DTO.MemberDTO;
 import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
 import com.jinsu.ticketrace.member.domain.entity.Member;
@@ -120,7 +119,7 @@ public class MemberController {
                     @ApiResponse(responseCode = "404", description = "비밀번호 틀림")
             }
     )
-    public void deleteMember(@RequestBody MemberDTO.password password, Authentication authentication){
+    public void deleteMember(@RequestBody @Valid MemberDTO.password password, Authentication authentication){
         long memberPk = Long.parseLong(authentication.getName());
         String accessToken = authentication.getCredentials() instanceof String credential
                 ? credential : null;

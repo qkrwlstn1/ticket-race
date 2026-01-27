@@ -1,6 +1,7 @@
 package com.jinsu.ticketrace.member.domain.DTO;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
@@ -13,10 +14,11 @@ public class SignUpDTO {
     @AllArgsConstructor
     public static class SignUpRequest{
 
-        @NotEmpty
+        @NotBlank
         private String id;
 
         @Email
+        @NotBlank
         private String email;
 
         @NotEmpty

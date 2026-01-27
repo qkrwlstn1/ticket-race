@@ -8,6 +8,7 @@ import com.jinsu.ticketrace.member.domain.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,7 +35,7 @@ public class authController {
                     @ApiResponse(responseCode = "404", description = "아이디, 비밀번호 확인 필요")
             }
     )
-    public ResponseEntity<AuthService.TokenResponse> signin(@RequestBody SignInDTO.signInRequest user){
+    public ResponseEntity<AuthService.TokenResponse> signin(@RequestBody @Valid SignInDTO.signInRequest user){
         Member member =  validator.memberCheck(user.getId(), user.getPassword());
         return ResponseEntity.ok(authService.signIn(member));
     }
@@ -49,7 +50,7 @@ public class authController {
                     @ApiResponse(responseCode = "401", description = "refresh token 만료 / 유효하지 않음")
             }
     )
-    public ResponseEntity<AuthService.TokenResponse> reissue(@RequestBody TokenReissueDTO.ReissueRequest request){
+    public ResponseEntity<AuthService.TokenResponse> reissue(@RequestBody @Valid TokenReissueDTO.ReissueRequest request){
         long memberPk = validator.validateRefreshToken(request.getRefreshToken());
         return ResponseEntity.ok(authService.reissue(request.getRefreshToken() ,memberPk));
     }

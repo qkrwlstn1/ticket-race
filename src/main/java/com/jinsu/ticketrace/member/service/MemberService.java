@@ -1,6 +1,5 @@
 package com.jinsu.ticketrace.member.service;
 
-import com.jinsu.ticketrace.auth.repository.redis.AccessTokenBlacklistStore;
 import com.jinsu.ticketrace.auth.service.AuthService;
 import com.jinsu.ticketrace.global.error.GlobalException;
 import com.jinsu.ticketrace.global.exception.MemberErrorCode;

@@ -1,6 +1,7 @@
 package com.jinsu.ticketrace.member.domain.DTO;
 
 import com.jinsu.ticketrace.member.domain.entity.Member;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class MemberDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class password{
+        @NotBlank
         private String password;
     }
     @Builder
@@ -41,6 +43,7 @@ public class MemberDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class nickname{
+        @NotBlank
         private String nickname;
     }
 }
