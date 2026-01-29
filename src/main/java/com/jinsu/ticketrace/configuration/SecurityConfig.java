@@ -69,6 +69,7 @@ public class SecurityConfig {
                         "/member/signup",
                         "/member/nickname/**",
                         "/member/email/**",
+                        "/member/id/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**"
