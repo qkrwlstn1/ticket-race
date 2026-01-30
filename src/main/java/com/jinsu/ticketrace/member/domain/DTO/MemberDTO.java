@@ -34,7 +34,7 @@ public class MemberDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class password{
+    public static class Password {
         @NotBlank
         private String password;
     }
@@ -42,7 +42,7 @@ public class MemberDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class nickname{
+    public static class Nickname{
         @NotBlank
         private String nickname;
     }

@@ -88,7 +88,7 @@ public class MemberController {
                     @ApiResponse(responseCode = "404", description = "비밀번호 틀림")
             }
     )
-    public ResponseEntity<MemberDTO.Info> info(@RequestBody MemberDTO.password password, Authentication authentication){
+    public ResponseEntity<MemberDTO.Info> info(@RequestBody MemberDTO.Password password, Authentication authentication){
         long memberPk = Long.parseLong(authentication.getName());
         Member member =memberValidator.memberPasswordCheck(memberPk, password.getPassword());
         MemberDTO.Info result = MemberDTO.Info.of(member);
@@ -104,10 +104,10 @@ public class MemberController {
                     @ApiResponse(responseCode = "409", description = "중복된 닉네임")
             }
     )
-     public void modifyInfo(@RequestBody MemberDTO.nickname nickname, Authentication authentication){
+     public ResponseEntity<?> modifyInfo(@RequestBody MemberDTO.Nickname nickname, Authentication authentication){
         long memberPk = Long.parseLong(authentication.getName());
         memberService.modifyInfo(nickname.getNickname(), memberPk);
-
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("me")
@@ -119,13 +119,14 @@ public class MemberController {
                     @ApiResponse(responseCode = "404", description = "비밀번호 틀림")
             }
     )
-    public void deleteMember(@RequestBody @Valid MemberDTO.password password, Authentication authentication){
+    public ResponseEntity<?> deleteMember(@RequestBody @Valid MemberDTO.Password password, Authentication authentication){
         long memberPk = Long.parseLong(authentication.getName());
         String accessToken = authentication.getCredentials() instanceof String credential
                 ? credential : null;
         Member member = memberValidator.memberPasswordCheck(memberPk, password.getPassword());
 
         memberService.deleteMember(member, accessToken);
+        return ResponseEntity.noContent().build();
     }
 
 

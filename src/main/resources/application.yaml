@@ -7,14 +7,20 @@ spring:
     username: root
     password: test
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+    properties:
+      hibernate:
+        ddl-auto: update
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+    show-sql: false
   data:
     redis:
       host: localhost
       port: 6379
-
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
 springdoc:
   api-docs:
     path: /v3/api-docs

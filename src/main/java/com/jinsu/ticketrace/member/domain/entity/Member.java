@@ -2,11 +2,14 @@ package com.jinsu.ticketrace.member.domain.entity;
 
 import com.jinsu.ticketrace.auth.domain.entity.RefreshToken;
 import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
+import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +39,9 @@ public class Member {
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private RefreshToken refreshToken;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<TicketBoard> ticketBoard;
 
     public static Member of(
             SignUpDTO.SignUpRequest signUpRequest

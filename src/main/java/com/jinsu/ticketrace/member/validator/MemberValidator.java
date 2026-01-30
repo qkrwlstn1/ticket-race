@@ -6,6 +6,7 @@ import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +47,11 @@ public class MemberValidator {
         Member member = optionalMember.orElseThrow(() -> new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND));
         if(!encoder.matches(password, member.getPassword())) throw new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND);
         return member;
+    }
+
+    public Member memberCheck(Authentication authentication){
+        long memberPk = Long.parseLong(authentication.getName());
+        return memberRepository.findById(memberPk).orElseThrow(() -> new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
     public void memberEmailCheck(String email){
