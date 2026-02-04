@@ -1,0 +1,68 @@
+package com.jinsu.ticketrace.ticket.board.service;
+
+import com.jinsu.ticketrace.member.domain.entity.Member;
+import com.jinsu.ticketrace.ticket.board.domain.DTO.TicketArticleDTO;
+import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
+import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class TicketBoardServiceTest {
+
+    @Mock
+    private TicketBoardRepository ticketBoardRepository;
+
+    @InjectMocks
+    private TicketBoardService ticketBoardService;
+
+    @Test
+    @DisplayName("게시글 생성 요청 시 저장 후 응답 DTO를 반환")
+    void create_article_returns_created_article_response(){
+        String title = "title";
+        String content = "content";
+        LocalDateTime createDate = LocalDateTime.now();
+        LocalDateTime deadline = LocalDateTime.now().plusDays(10);
+
+        Member member = Member.builder()
+                .memberPk(1L)
+                .nickname("member")
+                .build();
+        TicketArticleDTO.CreateArticleRequest articleRequest = TicketArticleDTO.CreateArticleRequest.builder()
+                .title(title)
+                .content(content)
+                .deadline(deadline)
+                .build();
+        TicketBoard board = TicketBoard.of(articleRequest,member);
+        TicketBoard savedBoard = TicketBoard.builder()
+                .boardPk(1L)
+                .title(title)
+                .content(content)
+                .member(member)
+                .createDateTime(createDate)
+                .deadlineDateTime(deadline)
+                .build();
+
+        when(ticketBoardRepository.save(board)).thenReturn(savedBoard);
+        TicketArticleDTO.CreateArticleResponse articleResponse = ticketBoardService.CreateArticle(member, articleRequest);
+
+        assertEquals(title, articleResponse.getTitle());
+        assertEquals(content, articleResponse.getContent());
+        assertEquals(1L, articleResponse.getBoardPk());
+        assertEquals(deadline, articleResponse.getDeadlineDate());
+        assertEquals(createDate, articleResponse.getCreateDate());
+        assertEquals("member", articleResponse.getMemberNickname());
+        verify(ticketBoardRepository).save(any());
+    }
+}

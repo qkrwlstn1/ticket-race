@@ -6,6 +6,7 @@ import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.ticket.board.domain.DTO.TicketArticleDTO;
 import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
 import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,6 @@ public class TicketBoardService {
     public TicketArticleDTO.CreateArticleResponse CreateArticle(Member member,
                                                                 TicketArticleDTO.CreateArticleRequest articleRequest){
         TicketBoard board = TicketBoard.of(articleRequest, member);
-        System.out.println(board.toString());
         TicketBoard savedBoard = ticketBoardRepository.save(board);
         return TicketArticleDTO.CreateArticleResponse.of(savedBoard);
     }
@@ -34,4 +34,12 @@ public class TicketBoardService {
         return TicketArticleDTO.GetArticle.of(ticketBoard);
     }
 
+    public void deleteBoard(TicketBoard board) {
+        ticketBoardRepository.delete(board);
+    }
+
+    public TicketArticleDTO.GetArticle modifyBoard(TicketBoard board, TicketArticleDTO.ModifyArticleRequest article) {
+        TicketBoard modifiedBoard = board.modifyBoard(article);
+        return TicketArticleDTO.GetArticle.of(modifiedBoard);
+    }
 }

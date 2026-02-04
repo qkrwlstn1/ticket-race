@@ -3,7 +3,9 @@ package com.jinsu.ticketrace.ticket.board.controller;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.member.validator.MemberValidator;
 import com.jinsu.ticketrace.ticket.board.domain.DTO.TicketArticleDTO;
+import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
 import com.jinsu.ticketrace.ticket.board.service.TicketBoardService;
+import com.jinsu.ticketrace.ticket.board.validator.TicketBoardValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
@@ -21,7 +23,7 @@ public class TicketBoardController {
 
     private final MemberValidator memberValidator;
     private final TicketBoardService ticketBoardService;
-
+    private final TicketBoardValidator ticketBoardValidator;
     @PostMapping("article")
     @Operation(
             summary = "게시글 작성",
@@ -39,7 +41,7 @@ public class TicketBoardController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createArticleResponse);
     }
 
-    @GetMapping("article/{id}")
+    @GetMapping("article/{boardId}")
     @Operation(
             summary = "게시글 조회",
             description = "게시글을 조회합니다",
@@ -48,11 +50,49 @@ public class TicketBoardController {
                     @ApiResponse(responseCode = "404", description = "없는 게시글 조회")
             }
     )
-    public ResponseEntity<TicketArticleDTO.GetArticle> getArticle(@PathVariable(name = "id") long boardId){
+    public ResponseEntity<TicketArticleDTO.GetArticle> getArticle(@PathVariable long boardId){
         TicketArticleDTO.GetArticle article = ticketBoardService.getArticle(boardId);
 
         return ResponseEntity.ok(article);
     }
 
+    @DeleteMapping("article/{boardId}")
+    @Operation(
+            summary = "게시글 삭제",
+            description = "게시글을 삭제합니다",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "삭제 성공"),
+                    @ApiResponse(responseCode = "403", description = "게시글 소유권이 없음"),
+                    @ApiResponse(responseCode = "404", description = "없는 게시글 조회")
+            }
+    )
+    public ResponseEntity<?> deleteArticle(@PathVariable long boardId, Authentication authentication){
+        TicketBoard board = ticketBoardValidator.boardCheck(boardId);
+        long memberPk = Long.parseLong(authentication.getName());
+        ticketBoardValidator.ownerCheck(board, memberPk);
+
+        ticketBoardService.deleteBoard(board);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("article")
+    @Operation(
+            summary = "게시글 수정",
+            description = "게시글을 수정하고 수정된 내용을 반환",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "수정 성공"),
+                    @ApiResponse(responseCode = "403", description = "게시글 소유권이 없음"),
+                    @ApiResponse(responseCode = "404", description = "없는 게시글 조회")
+            }
+    )
+    public ResponseEntity<TicketArticleDTO.GetArticle> modifyBoard(@RequestBody @Valid TicketArticleDTO.ModifyArticleRequest article,
+                                                                       Authentication authentication){
+        TicketBoard board = ticketBoardValidator.boardCheck(article.getBoardPk());
+        long memberPk = Long.parseLong(authentication.getName());
+        ticketBoardValidator.ownerCheck(board, memberPk);
+
+        TicketArticleDTO.GetArticle result = ticketBoardService.modifyBoard(board, article);
+        return ResponseEntity.ok(result);
+    }
 
 }

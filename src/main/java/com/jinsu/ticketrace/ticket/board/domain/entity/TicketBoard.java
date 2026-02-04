@@ -57,5 +57,13 @@ public class TicketBoard {
                 .build();
     }
 
+    public TicketBoard modifyBoard(TicketArticleDTO.ModifyArticleRequest article){
+        this.title = article.getTitle();
+        this.content = article.getContent();
+        this.deadlineDateTime = article.getDeadlineDateTime();
+
+        return this;
+    }
+
 
 }

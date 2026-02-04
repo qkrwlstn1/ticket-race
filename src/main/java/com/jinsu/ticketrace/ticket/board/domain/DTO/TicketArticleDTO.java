@@ -33,7 +33,7 @@ public class TicketArticleDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CreateArticleResponse{
-
+        private long boardPk;
         private String title;
         private String content;
 
@@ -44,6 +44,7 @@ public class TicketArticleDTO {
 
         public static CreateArticleResponse of(TicketBoard ticketBoard){
             return CreateArticleResponse.builder()
+                    .boardPk(ticketBoard.getBoardPk())
                     .title(ticketBoard.getTitle())
                     .content(ticketBoard.getContent())
                     .deadlineDate(ticketBoard.getDeadlineDateTime())
@@ -89,6 +90,24 @@ public class TicketArticleDTO {
         private LocalDateTime createDate;
 
         private String memberNickname;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ModifyArticleRequest{
+        @NotBlank
+        private long boardPk;
+        @NotBlank
+        @Size(max = 255)
+        private String title;
+        @NotBlank
+        @Size(max = 5000)
+        private String content;
+        @NotNull
+        @Future
+        private LocalDateTime deadlineDateTime;
     }
 
 }
