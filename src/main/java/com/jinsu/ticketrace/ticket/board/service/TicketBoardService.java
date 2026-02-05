@@ -28,10 +28,8 @@ public class TicketBoardService {
     }
 
     @Transactional(readOnly = true)
-    public TicketArticleDTO.GetArticle getArticle(long ticketBoardPk){
-        Optional<TicketBoard> optionalTicketBoard = ticketBoardRepository.findTicketBoardEager(ticketBoardPk);
-        TicketBoard ticketBoard = optionalTicketBoard.orElseThrow(() -> new GlobalException(TicketBoardErrorCode.TICKET_BOARD_NOT_FOUND));
-        return TicketArticleDTO.GetArticle.of(ticketBoard);
+    public TicketArticleDTO.GetArticle getArticle(TicketBoard board){
+        return TicketArticleDTO.GetArticle.of(board);
     }
 
     public void deleteBoard(TicketBoard board) {

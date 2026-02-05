@@ -51,7 +51,8 @@ public class TicketBoardController {
             }
     )
     public ResponseEntity<TicketArticleDTO.GetArticle> getArticle(@PathVariable long boardId){
-        TicketArticleDTO.GetArticle article = ticketBoardService.getArticle(boardId);
+        TicketBoard board = ticketBoardValidator.boardCheck(boardId);
+        TicketArticleDTO.GetArticle article = ticketBoardService.getArticle(board);
 
         return ResponseEntity.ok(article);
     }

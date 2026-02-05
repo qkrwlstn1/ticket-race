@@ -1,10 +1,11 @@
-package com.jinsu.ticketrace.ticket.board.validator;
+package com.jinsu.ticketrace.ticket.board.validator.unit;
 
 import com.jinsu.ticketrace.global.error.GlobalException;
 import com.jinsu.ticketrace.global.exception.TicketBoardErrorCode;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
 import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
+import com.jinsu.ticketrace.ticket.board.validator.TicketBoardValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

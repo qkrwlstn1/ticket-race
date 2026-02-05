@@ -60,6 +60,7 @@ public class TicketArticleDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class GetArticle{
+        private long boardPk;
         private String title;
         private String content;
 
@@ -70,6 +71,7 @@ public class TicketArticleDTO {
         private String memberNickname;
         public static GetArticle of(TicketBoard ticketBoard){
             return GetArticle.builder()
+                    .boardPk(ticketBoard.getBoardPk())
                     .title(ticketBoard.getTitle())
                     .content(ticketBoard.getContent())
                     .deadlineDate(ticketBoard.getDeadlineDateTime())
