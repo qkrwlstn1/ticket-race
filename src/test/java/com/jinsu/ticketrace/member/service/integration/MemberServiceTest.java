@@ -39,10 +39,10 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원가입을 하면 저장되어야 한다")
-    void sign_up_for_member_it_should_be_saved(){
+    @DisplayName("회원가입 시 저장된다")
+    void signUpRequest_SignUp_MemberPersisted() {
         //given
-        SignUpDTO.SignUpRequest dto= SignUpDTO.SignUpRequest.builder()
+        SignUpDTO.SignUpRequest dto = SignUpDTO.SignUpRequest.builder()
                 .id("id")
                 .email("email@naver.com")
                 .nickname("nickname")
@@ -53,7 +53,7 @@ class MemberServiceTest {
         memberService.signUp(dto);
         Optional<Member> result = memberRepository.findByMemberIdOrEmailOrNickname(dto.getId(), dto.getEmail(), dto.getNickname());
         //then
-        assertFalse(result.isEmpty());
+        assertTrue(result.isPresent());
     }
 
 //    @Test

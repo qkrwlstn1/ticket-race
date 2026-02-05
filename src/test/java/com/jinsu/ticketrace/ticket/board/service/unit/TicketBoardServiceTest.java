@@ -27,8 +27,8 @@ class TicketBoardServiceTest {
     private TicketBoardService ticketBoardService;
 
     @Test
-    @DisplayName("게시글 생성 요청 시 저장 후 응답 DTO를 반환")
-    void create_article_returns_created_article_response(){
+    @DisplayName("게시글 생성 요청 시 저장 후 응답 DTO를 반환한다")
+    void createRequest_CreateArticle_ReturnResponse() {
         String title = "title";
         String content = "content";
         LocalDateTime createDate = LocalDateTime.now();
@@ -66,8 +66,8 @@ class TicketBoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 조회 요청 시 DTO 반환")
-    void get_article_returns_DTO_response(){
+    @DisplayName("게시글 조회 요청 시 DTO를 반환한다")
+    void board_GetArticle_ReturnDto() {
         Member member = Member.builder()
                 .memberPk(2L)
                 .nickname("nick")

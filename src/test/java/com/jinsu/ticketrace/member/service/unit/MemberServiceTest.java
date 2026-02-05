@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
@@ -26,8 +25,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
-
-
     @Mock
     MemberRepository memberRepository; // DB 접근 차단(목 객체)
     @Mock
@@ -50,11 +47,10 @@ class MemberServiceTest {
         memberService = new MemberService(memberRepository, passwordEncoder, memberValidator, authService);
     }
 
-
     @Tag("password Encoding")
-    @DisplayName("비밀번호는 평문으로 저장되면 안 된다")
+    @DisplayName("비밀번호는 평문으로 저장되지 않는다")
     @Test
-    void password_should_not_be_saved_plain_text(){
+    void rawPassword_Encode_NotEqual() {
         //given
         String raw = "P@ssw0rd!";
 
@@ -70,7 +66,7 @@ class MemberServiceTest {
     @Tag("password Encoding")
     @DisplayName("같은 비밀번호를 여러 번 인코딩하면 결과 문자열은 서로 달라진다")
     @Test
-    void encoding_same_password_multiple_time_result_string_different() {
+    void samePassword_EncodedMultipleTimes_HashesDiffer() {
         // given
         String raw = "P@ssw0rd!";
 
@@ -86,11 +82,11 @@ class MemberServiceTest {
                 () -> assertNotEquals(enc2, enc3)
         );
     }
+
     @Tag("password Encoding")
-    @DisplayName("인코딩 결과가 매번 달라도 matches(raw, encoded)는 항상 true")
+    @DisplayName("인코딩 결과가 매번 달라도 matches(raw, encoded)는 항상 true다")
     @Test
-    void encoding_result_different_matches_result_true() {
-        long ts = System.nanoTime();
+    void rawPassword_Matches_TrueForEachEncoded() {
         // given
         String raw = "P@ssw0rd!";
 
@@ -106,13 +102,11 @@ class MemberServiceTest {
                 //틀린 비밀번호는 false
                 () -> assertFalse(passwordEncoder.matches("WrongP@ss!", enc1))
         );
-        long te = System.nanoTime();
-        System.out.println("time = " + (te - ts) / 1_000_000);
     }
 
     @DisplayName("닉네임 변경 시 중복 검증 후 엔티티가 업데이트된다")
     @Test
-    void modify_info_updates_nickname_after_validation() {
+    void member_ModifyInfo_ValidateNickname() {
         String newNickname = "newNickname";
 
         Member member = Member.builder()
@@ -129,7 +123,7 @@ class MemberServiceTest {
 
     @DisplayName("회원 탈퇴 시 로그아웃 처리 후 삭제된다")
     @Test
-    void delete_member_logs_out_and_deletes_member() {
+    void member_Delete_LogoutAndDelete() {
         Member member = Member.builder()
                 .memberPk(1L)
                 .build();

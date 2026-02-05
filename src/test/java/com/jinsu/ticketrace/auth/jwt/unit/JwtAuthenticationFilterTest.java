@@ -42,7 +42,7 @@ class JwtAuthenticationFilterTest {
 
     @Test
     @DisplayName("Authorization 헤더가 없으면 체인을 통과하고 인증을 세팅하지 않는다")
-    void no_auth_header_should_pass_through() throws ServletException, IOException {
+    void noAuthHeader_Filter_PassThrough() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -55,11 +55,11 @@ class JwtAuthenticationFilterTest {
 
     @Test
     @DisplayName("블랙리스트 토큰이면 401을 반환하고 체인을 중단")
-    void blacklisted_token_should_return_401() throws ServletException, IOException {
+    void blacklistedToken_Filter_then401() throws ServletException, IOException {
         String accessToken = "blacklistedAccessToken";
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        request.addHeader("Authorization","Bearer "+accessToken);
+        request.addHeader("Authorization", "Bearer " + accessToken);
 
         when(accessTokenBlacklistStore.isBlacklisted(accessToken)).thenReturn(true);
         filter.doFilter(request, response, filterChain);
@@ -75,12 +75,12 @@ class JwtAuthenticationFilterTest {
 
     @Test
     @DisplayName("유효하지 않은 토큰이면 401을 반환")
-    void invalid_access_token_should_return_401() throws ServletException, IOException {
+    void invalidAccessToken_Filter_then401() throws ServletException, IOException {
         String invalidAccessToken = "invalidAccessToken";
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        request.addHeader("Authorization","Bearer " + invalidAccessToken);
+        request.addHeader("Authorization", "Bearer " + invalidAccessToken);
 
         when(accessTokenBlacklistStore.isBlacklisted(invalidAccessToken)).thenReturn(false);
         when(tokenProvider.parseAndValidate(invalidAccessToken)).thenThrow(new JwtException("invalid"));
@@ -93,12 +93,12 @@ class JwtAuthenticationFilterTest {
 
     @Test
     @DisplayName("access 토큰이 아니면 401을 반환")
-    void non_access_token_should_return_401() throws ServletException, IOException {
+    void nonAccessToken_Filter_then401() throws ServletException, IOException {
         String refreshToken = "refresh token";
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        request.addHeader("Authorization","Bearer " + refreshToken);
+        request.addHeader("Authorization", "Bearer " + refreshToken);
 
         Claims claims = Jwts.claims()
                 .subject("1")
@@ -115,12 +115,12 @@ class JwtAuthenticationFilterTest {
     }
     @Test
     @DisplayName("유효한 access 토큰이면 SecurityContext에 인증을 세팅한다")
-    void valid_access_token_should_set_authentication() throws ServletException, IOException {
+    void validAccessToken_Filter_SetAuthentication() throws ServletException, IOException {
         String accessToken = "access token";
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        request.addHeader("Authorization","Bearer " + accessToken);
+        request.addHeader("Authorization", "Bearer " + accessToken);
 
         Claims claims = Jwts.claims()
                 .subject("96")

@@ -39,8 +39,8 @@ class AuthValidatorTest {
     private AuthValidator validator;
 
     @Test
-    @DisplayName("아이디와 비밀번호가 일치하면 Member를 반환한다.")
-    void member_check_returns_member_when_password_matches(){
+    @DisplayName("아이디/비밀번호가 일치하면 Member를 반환한다")
+    void member_PasswordMatches_ReturnMember() {
         Member member = Member.builder()
                 .memberId("user")
                 .password("hashed")
@@ -51,13 +51,13 @@ class AuthValidatorTest {
 
         Member result = validator.memberCheck("user", "pass");
 
-        assertSame(result,member);
+        assertSame(result, member);
 
     }
 
     @Test
     @DisplayName("비밀번호가 다르면 MEMBER_NOT_FOUND 예외를 반환한다")
-    void member_check_throws_when_password_mismatch(){
+    void member_PasswordMismatch_Throw() {
         Member member = Member.builder()
                 .memberId("user")
                 .password("hashed")
@@ -73,11 +73,7 @@ class AuthValidatorTest {
 
     @Test
     @DisplayName("아이디가 다르면 MEMBER_NOT_FOUND 예외를 반환한다")
-    void member_check_throws_when_id_mismatch(){
-        Member member = Member.builder()
-                .memberId("user")
-                .password("hashed")
-                .build();
+    void missingMember_Check_Throw() {
         when(memberRepository.findByMemberId("user1")).thenReturn(Optional.empty());
 
         GlobalException passMiss = assertThrows(GlobalException.class, () -> validator.memberCheck("user1", "pass"));
@@ -87,7 +83,7 @@ class AuthValidatorTest {
     }
     @Test
     @DisplayName("refresh token이 비어 있거나 null인 경우 REFRESH_TOKEN_REQUIRED 예외를 반환한다")
-    void validate_refresh_token_requires_value() {
+    void emptyRefreshToken_Validate_ThrowRequired() {
         GlobalException nullException = assertThrows(GlobalException.class, () -> validator.validateRefreshToken(null));
         GlobalException emptyException = assertThrows(GlobalException.class, () -> validator.validateRefreshToken(""));
 
@@ -98,7 +94,7 @@ class AuthValidatorTest {
 
     @Test
     @DisplayName("refresh token 파싱 실패 시 INVALID_REFRESH_TOKEN 예외를 반환한다")
-    void validate_refresh_token_throws_on_parse_error() {
+    void invalidRefreshToken_Parse_Throw() {
         String badToken = "bad.token";
         when(jwtTokenProvider.parseAndValidate(badToken)).thenThrow(new IllegalArgumentException("bad"));
 
@@ -110,7 +106,7 @@ class AuthValidatorTest {
 
     @Test
     @DisplayName("refresh 타입이 아니면 INVALID_REFRESH_TOKEN 예외를 반환한다")
-    void validate_refresh_token_rejects_non_refresh_type() {
+    void nonRefreshToken_Validate_Throw() {
         String accessToken = "accessToken";
         Claims claims = Jwts.claims()
                 .subject("1")
@@ -118,13 +114,13 @@ class AuthValidatorTest {
                 .build();
         when(jwtTokenProvider.parseAndValidate(accessToken)).thenReturn(claims);
 
-        GlobalException e = assertThrows(GlobalException.class, () ->validator.validateRefreshToken(accessToken));
+        GlobalException e = assertThrows(GlobalException.class, () -> validator.validateRefreshToken(accessToken));
         assertEquals(AuthErrorCode.INVALID_REFRESH_TOKEN, e.getErrorCode());
     }
 
     @Test
     @DisplayName("저장된 refresh token과 다르면 INVALID_REFRESH_TOKEN 예외를 반환한다")
-    void validate_refresh_token_rejects_mismatch() {
+    void mismatchedRefreshToken_Validate_Throw() {
         String inputToken = "refresh token1";
         String returnToken = "refresh token2";
         Claims claims = Jwts.claims()
@@ -141,7 +137,7 @@ class AuthValidatorTest {
 
     @Test
     @DisplayName("정상 refresh token이면 memberPk를 반환한다")
-    void validate_refresh_token_returns_member_pk() {
+    void validRefreshToken_Validate_ReturnMemberPk() {
         String inputToken = "refresh token";
         String returnToken = "refresh token";
         Claims claims = Jwts.claims()

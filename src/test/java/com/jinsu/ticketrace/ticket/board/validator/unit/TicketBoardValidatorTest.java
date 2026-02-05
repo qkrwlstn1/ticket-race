@@ -27,20 +27,20 @@ class TicketBoardValidatorTest {
     private TicketBoardValidator ticketBoardValidator;
 
     @Test
-    @DisplayName("저장되지 않은 TicketBoard를 요청하면 TICKET_BOARD_NOT_FOUND를 반환")
-    void validate_board_rejects_mismatch(){
+    @DisplayName("저장되지 않은 TicketBoard를 요청하면 TICKET_BOARD_NOT_FOUND를 반환한다")
+    void missingBoard_Check_Throw() {
         long boardPk = 105L;
 
         when(ticketBoardRepository.findById(boardPk)).thenReturn(Optional.empty());
-        GlobalException e = assertThrows(GlobalException.class,() -> ticketBoardValidator.boardCheck(boardPk));
+        GlobalException e = assertThrows(GlobalException.class, () -> ticketBoardValidator.boardCheck(boardPk));
 
         assertEquals(TicketBoardErrorCode.TICKET_BOARD_NOT_FOUND, e.getErrorCode());
 
     }
 
     @Test
-    @DisplayName("저장된 ticketBoardPk를 요청하면 ticketBoard를 반환")
-    void board_check_returns_board(){
+    @DisplayName("저장된 ticketBoardPk를 요청하면 ticketBoard를 반환한다")
+    void existingBoard_Check_ReturnBoard() {
         long boardPk = 19L;
         TicketBoard board = TicketBoard.builder()
                 .boardPk(boardPk)
@@ -51,9 +51,10 @@ class TicketBoardValidatorTest {
         assertEquals(board, result);
 
     }
+
     @Test
-    @DisplayName("게시글의 memberPk와 입력받은 memberPk가 다르면 TICKET_BOARD_NOT_OWNER를 반환")
-    void validate_board_rejects_non_owner(){
+    @DisplayName("게시글의 memberPk와 입력받은 memberPk가 다르면 TICKET_BOARD_NOT_OWNER를 반환한다")
+    void nonOwner_Check_Throw() {
         long memberPk = 123L;
         long inputMemberPk = 321L;
         Member member = Member.builder()
@@ -63,7 +64,7 @@ class TicketBoardValidatorTest {
                 .member(member)
                 .build();
 
-        GlobalException e = assertThrows(GlobalException.class,() -> ticketBoardValidator.ownerCheck(board, inputMemberPk));
+        GlobalException e = assertThrows(GlobalException.class, () -> ticketBoardValidator.ownerCheck(board, inputMemberPk));
         assertEquals(TicketBoardErrorCode.TICKET_BOARD_NOT_OWNER, e.getErrorCode());
 
     }
