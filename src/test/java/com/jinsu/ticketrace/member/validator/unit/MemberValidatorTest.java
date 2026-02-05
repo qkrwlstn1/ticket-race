@@ -43,16 +43,16 @@ class MemberValidatorTest {
 
     @Test
     @DisplayName("중복이 없으면 예외가 발생하지 않는다")
-    void no_duplicate_should_pass() {
+    void nonDuplicate_Check_NoException() {
         assertDoesNotThrow(() ->
                 memberValidator.memberDuplicateCheck(signUpRequest("park", "park@naver.com", "park"))
         );
     }
 
     @ParameterizedTest(name = "[{index}] {0} -> {2}")
-    @MethodSource("duplicate_cases")
+    @MethodSource("duplicateCases")
     @DisplayName("중복이면 정책에 맞는 ErrorCode가 발생한다")
-    void duplicate_should_throw_by_policy(String scenario,
+    void duplicateRequest_Check_ThrowByPolicy(String scenario,
                                           SignUpDTO.SignUpRequest request,
                                           MemberErrorCode expected) {
 
@@ -63,7 +63,7 @@ class MemberValidatorTest {
     }
 
 
-    static Stream<Arguments> duplicate_cases() {
+    static Stream<Arguments> duplicateCases() {
         return Stream.of(
                 // 단일 중복
                 Arguments.of("ID 중복",       signUpRequest("jinsu", "park@naver.com", "park"), MemberErrorCode.DUPLICATE_ID),

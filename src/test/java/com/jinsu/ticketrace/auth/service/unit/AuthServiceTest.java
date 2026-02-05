@@ -7,7 +7,6 @@ import com.jinsu.ticketrace.auth.service.AuthService;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +38,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName("로그인 후 토큰을 반환하고 refresh token을 저장해야 한다")
-    void signin_should_return_tokens_and_store_refresh_token(){
+    void member_SignIn_ReturnTokensAndStoreRefresh() {
         Member member = Member.builder()
                 .memberPk(1L)
                 .build();
@@ -60,7 +59,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName("로그아웃은 만료될 때까지 액세스 토큰을 블랙리스트에 올려야 한다")
-    void logout_should_blacklist_access_token_until_expiry(){
+    void accessToken_Logout_BlacklistUntilExpiry() {
         Date expiration = Date.from(Instant.now().plusSeconds(300));
 
         Claims claims = Jwts.claims().expiration(expiration).build();
@@ -77,7 +76,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName("refresh token 재발급은 새로운 토큰을 반환하고 refresh token을 저장해야 한다")
-    void reissue_should_return_new_tokens_and_store_refresh_token(){
+    void refreshToken_Reissue_ReturnTokensAndStoreRefresh() {
         JwtTokenProvider.RefreshTokenBundle refreshTokenBundle =
                 new JwtTokenProvider.RefreshTokenBundle("new-refresh-token",Duration.ofHours(2));
 
