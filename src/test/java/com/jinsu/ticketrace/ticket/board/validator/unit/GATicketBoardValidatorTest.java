@@ -3,7 +3,7 @@ package com.jinsu.ticketrace.ticket.board.validator.unit;
 import com.jinsu.ticketrace.global.error.GlobalException;
 import com.jinsu.ticketrace.global.exception.TicketBoardErrorCode;
 import com.jinsu.ticketrace.member.domain.entity.Member;
-import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
+import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
 import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
 import com.jinsu.ticketrace.ticket.board.validator.TicketBoardValidator;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TicketBoardValidatorTest {
+class GATicketBoardValidatorTest {
     @Mock
     private TicketBoardRepository ticketBoardRepository;
 
@@ -42,12 +42,12 @@ class TicketBoardValidatorTest {
     @DisplayName("저장된 ticketBoardPk를 요청하면 ticketBoard를 반환한다")
     void existingBoard_Check_ReturnBoard() {
         long boardPk = 19L;
-        TicketBoard board = TicketBoard.builder()
+        GATicketBoard board = GATicketBoard.builder()
                 .boardPk(boardPk)
                 .build();
         when(ticketBoardRepository.findById(boardPk)).thenReturn(Optional.of(board));
 
-        TicketBoard result = ticketBoardValidator.boardCheck(boardPk);
+        GATicketBoard result = ticketBoardValidator.boardCheck(boardPk);
         assertEquals(board, result);
 
     }
@@ -60,7 +60,7 @@ class TicketBoardValidatorTest {
         Member member = Member.builder()
                 .memberPk(memberPk)
                 .build();
-        TicketBoard board = TicketBoard.builder()
+        GATicketBoard board = GATicketBoard.builder()
                 .member(member)
                 .build();
 

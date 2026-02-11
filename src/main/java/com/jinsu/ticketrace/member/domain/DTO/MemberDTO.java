@@ -19,9 +19,11 @@ public class MemberDTO {
         private String id;
         private String nickname;
         private String email;
+        private long account;
 
         public static Info of(Member member){
             return Info.builder()
+                    .account(member.getAccount())
                     .id(member.getMemberId())
                     .nickname(member.getNickname())
                     .email(member.getEmail())

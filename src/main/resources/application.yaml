@@ -7,9 +7,10 @@ spring:
     username: root
     password: test
   jpa:
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
-        ddl-auto: update
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
@@ -21,6 +22,8 @@ spring:
 logging:
   level:
     org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
 springdoc:
   api-docs:
     path: /v3/api-docs

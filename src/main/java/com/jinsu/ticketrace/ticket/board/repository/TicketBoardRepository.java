@@ -1,16 +1,16 @@
 package com.jinsu.ticketrace.ticket.board.repository;
 
-import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
+import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface TicketBoardRepository extends JpaRepository<TicketBoard, Long> {
+public interface TicketBoardRepository extends JpaRepository<GATicketBoard, Long> {
 
     @Query("select tb from " +
-            "TicketBoard tb left join fetch tb.member " +
+            "GATicketBoard tb left join fetch tb.member " +
             "where tb.boardPk = :id ")
-    Optional<TicketBoard> findTicketBoardEager(long id);
+    Optional<GATicketBoard> findTicketBoardEager(long id);
 
 }

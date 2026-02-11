@@ -1,7 +1,7 @@
 package com.jinsu.ticketrace.ticket.board.domain.DTO;
 
 
-import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
+import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +24,12 @@ public class TicketArticleDTO {
         @NotBlank
         @Size(max = 5000)
         private String content;
+        @NotBlank
+        @Min(0)
+        private long price;
+        @NotBlank
+        @Min(0)
+        private long quantity;
         @NotNull
         @Future
         private LocalDateTime deadline;
@@ -36,20 +42,23 @@ public class TicketArticleDTO {
         private long boardPk;
         private String title;
         private String content;
-
+        private long quantity;
+        private long price;
         private LocalDateTime deadlineDate;
         private LocalDateTime createDate;
 
         private String memberNickname;
 
-        public static CreateArticleResponse of(TicketBoard ticketBoard){
+        public static CreateArticleResponse of(GATicketBoard GATicketBoard){
             return CreateArticleResponse.builder()
-                    .boardPk(ticketBoard.getBoardPk())
-                    .title(ticketBoard.getTitle())
-                    .content(ticketBoard.getContent())
-                    .deadlineDate(ticketBoard.getDeadlineDateTime())
-                    .createDate(ticketBoard.getCreateDateTime())
-                    .memberNickname(ticketBoard.getMember().getNickname())
+                    .boardPk(GATicketBoard.getBoardPk())
+                    .title(GATicketBoard.getTitle())
+                    .content(GATicketBoard.getContent())
+                    .quantity(GATicketBoard.getQuantity())
+                    .price(GATicketBoard.getPrice())
+                    .deadlineDate(GATicketBoard.getDeadlineDateTime())
+                    .createDate(GATicketBoard.getCreateDateTime())
+                    .memberNickname(GATicketBoard.getMember().getNickname())
                     .build();
         }
 
@@ -63,21 +72,24 @@ public class TicketArticleDTO {
         private long boardPk;
         private String title;
         private String content;
+        private long quantity;
+        private long price;
 
         private LocalDateTime deadlineDate;
         private LocalDateTime modifyDate;
         private LocalDateTime createDate;
 
         private String memberNickname;
-        public static GetArticle of(TicketBoard ticketBoard){
+        public static GetArticle of(GATicketBoard GATicketBoard){
             return GetArticle.builder()
-                    .boardPk(ticketBoard.getBoardPk())
-                    .title(ticketBoard.getTitle())
-                    .content(ticketBoard.getContent())
-                    .deadlineDate(ticketBoard.getDeadlineDateTime())
-                    .modifyDate(ticketBoard.getModifyDateTime())
-                    .createDate(ticketBoard.getCreateDateTime())
-                    .memberNickname(ticketBoard.getMember().getNickname())
+                    .boardPk(GATicketBoard.getBoardPk())
+                    .quantity(GATicketBoard.getQuantity())
+                    .title(GATicketBoard.getTitle())
+                    .content(GATicketBoard.getContent())
+                    .deadlineDate(GATicketBoard.getDeadlineDateTime())
+                    .modifyDate(GATicketBoard.getModifyDateTime())
+                    .createDate(GATicketBoard.getCreateDateTime())
+                    .memberNickname(GATicketBoard.getMember().getNickname())
                     .build();
         }
     }
@@ -107,6 +119,12 @@ public class TicketArticleDTO {
         @NotBlank
         @Size(max = 5000)
         private String content;
+        @Min(0)
+        @NotBlank
+        private long price;
+        @Min(0)
+        @NotBlank
+        private long quantity;
         @NotNull
         @Future
         private LocalDateTime deadlineDateTime;

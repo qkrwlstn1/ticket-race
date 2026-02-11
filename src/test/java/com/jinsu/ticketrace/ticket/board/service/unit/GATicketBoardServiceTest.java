@@ -2,7 +2,7 @@ package com.jinsu.ticketrace.ticket.board.service.unit;
 
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.ticket.board.domain.DTO.TicketArticleDTO;
-import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
+import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
 import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
 import com.jinsu.ticketrace.ticket.board.service.TicketBoardService;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class TicketBoardServiceTest {
+class GATicketBoardServiceTest {
 
     @Mock
     private TicketBoardRepository ticketBoardRepository;
@@ -44,7 +44,7 @@ class TicketBoardServiceTest {
                 .deadline(deadline)
                 .build();
         
-        TicketBoard savedBoard = TicketBoard.builder()
+        GATicketBoard savedBoard = GATicketBoard.builder()
                 .boardPk(3L)
                 .title(title)
                 .content(content)
@@ -53,7 +53,7 @@ class TicketBoardServiceTest {
                 .deadlineDateTime(deadline)
                 .build();
 
-        when(ticketBoardRepository.save(any(TicketBoard.class))).thenReturn(savedBoard);
+        when(ticketBoardRepository.save(any(GATicketBoard.class))).thenReturn(savedBoard);
         TicketArticleDTO.CreateArticleResponse articleResponse = ticketBoardService.CreateArticle(member, articleRequest);
 
         assertEquals(title, articleResponse.getTitle());
@@ -72,7 +72,7 @@ class TicketBoardServiceTest {
                 .memberPk(2L)
                 .nickname("nick")
                 .build();
-        TicketBoard board = TicketBoard.builder()
+        GATicketBoard board = GATicketBoard.builder()
                 .boardPk(1L)
                 .title("title")
                 .content("content")

@@ -3,13 +3,12 @@ package com.jinsu.ticketrace.ticket.board.controller;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.member.validator.MemberValidator;
 import com.jinsu.ticketrace.ticket.board.domain.DTO.TicketArticleDTO;
-import com.jinsu.ticketrace.ticket.board.domain.entity.TicketBoard;
+import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
 import com.jinsu.ticketrace.ticket.board.service.TicketBoardService;
 import com.jinsu.ticketrace.ticket.board.validator.TicketBoardValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +50,7 @@ public class TicketBoardController {
             }
     )
     public ResponseEntity<TicketArticleDTO.GetArticle> getArticle(@PathVariable long boardId){
-        TicketBoard board = ticketBoardValidator.boardCheck(boardId);
+        GATicketBoard board = ticketBoardValidator.boardCheck(boardId);
         TicketArticleDTO.GetArticle article = ticketBoardService.getArticle(board);
 
         return ResponseEntity.ok(article);
@@ -68,7 +67,7 @@ public class TicketBoardController {
             }
     )
     public ResponseEntity<?> deleteArticle(@PathVariable long boardId, Authentication authentication){
-        TicketBoard board = ticketBoardValidator.boardCheck(boardId);
+        GATicketBoard board = ticketBoardValidator.boardCheck(boardId);
         long memberPk = Long.parseLong(authentication.getName());
         ticketBoardValidator.ownerCheck(board, memberPk);
 
@@ -88,7 +87,7 @@ public class TicketBoardController {
     )
     public ResponseEntity<TicketArticleDTO.GetArticle> modifyBoard(@RequestBody @Valid TicketArticleDTO.ModifyArticleRequest article,
                                                                        Authentication authentication){
-        TicketBoard board = ticketBoardValidator.boardCheck(article.getBoardPk());
+        GATicketBoard board = ticketBoardValidator.boardCheck(article.getBoardPk());
         long memberPk = Long.parseLong(authentication.getName());
         ticketBoardValidator.ownerCheck(board, memberPk);
 
