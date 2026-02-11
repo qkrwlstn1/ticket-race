@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 public enum TicketBoardErrorCode implements ErrorCode {
 
     TICKET_BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "없는 게시글 입니다"),
-    TICKET_BOARD_NOT_OWNER(HttpStatus.FORBIDDEN, "게시글 주인이 아닙니다")
+    TICKET_BOARD_NOT_OWNER(HttpStatus.FORBIDDEN, "게시글 주인이 아닙니다"),
+    TICKET_SOLD_OUT(HttpStatus.CONFLICT, "매진된 티켓 입니다")
     ;
 
     private final HttpStatus status;

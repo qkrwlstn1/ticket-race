@@ -1,6 +1,8 @@
 package com.jinsu.ticketrace.member.domain.entity;
 
 import com.jinsu.ticketrace.auth.domain.entity.RefreshToken;
+import com.jinsu.ticketrace.global.error.GlobalException;
+import com.jinsu.ticketrace.global.exception.MemberErrorCode;
 import com.jinsu.ticketrace.member.domain.DTO.SignUpDTO;
 import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
 import com.jinsu.ticketrace.ticket.sale.domain.entity.Ticket;
@@ -66,5 +68,11 @@ public class Member {
     }
     public void modifyNickname(String nickname){
         this.nickname = nickname;
+    }
+
+    public void buy(long price, long amount){
+        long totalPrice = price * amount;
+        if (account < totalPrice)
+            throw new GlobalException(MemberErrorCode.ACCOUNT_INSUFFICIENT_FUNDS);
     }
 }

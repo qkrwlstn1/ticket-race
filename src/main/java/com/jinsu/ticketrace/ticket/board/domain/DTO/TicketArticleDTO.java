@@ -24,10 +24,10 @@ public class TicketArticleDTO {
         @NotBlank
         @Size(max = 5000)
         private String content;
-        @NotBlank
+        @NotNull
         @Min(0)
         private long price;
-        @NotBlank
+        @NotNull
         @Min(0)
         private long quantity;
         @NotNull
@@ -120,10 +120,10 @@ public class TicketArticleDTO {
         @Size(max = 5000)
         private String content;
         @Min(0)
-        @NotBlank
+        @NotNull
         private long price;
         @Min(0)
-        @NotBlank
+        @NotNull
         private long quantity;
         @NotNull
         @Future

@@ -1,5 +1,7 @@
 package com.jinsu.ticketrace.ticket.sale.domain.DTO;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +14,11 @@ public class TicketSaleDTO {
     @RequiredArgsConstructor
     @AllArgsConstructor
     public static class RequestSale{
-        long boardPk;
+        @NotBlank
+        private long boardPk;
+
+        @NotBlank
+        @Min(1)
+        private long amount;
     }
 }

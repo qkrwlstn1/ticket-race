@@ -20,16 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("ticket/sale")
 public class TicketSaleController {
 
-    private final MemberValidator memberValidator;
-    private final TicketBoardValidator ticketBoardValidator;
     private final TicketSaleService ticketSaleService;
 
     @PostMapping()
     public ResponseEntity<?> ticketSale(@RequestBody TicketSaleDTO.RequestSale requestSale, Authentication authentication){
-
-        Member member = memberValidator.memberCheck(authentication);
-        GATicketBoard ticketBoard = ticketBoardValidator.boardCheck(requestSale.getBoardPk());
-        ticketSaleService.ticketSale(ticketBoard, member);
+        long memberPk = Long.parseLong(authentication.getName());
+        ticketSaleService.ticketSale(requestSale.getBoardPk(), memberPk, requestSale.getAmount());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

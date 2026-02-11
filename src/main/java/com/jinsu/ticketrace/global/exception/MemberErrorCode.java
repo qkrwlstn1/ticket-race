@@ -8,6 +8,7 @@ public enum MemberErrorCode implements ErrorCode {
     DUPLICATE_ID(HttpStatus.CONFLICT, "이미 사용 중인 아이디입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND,"일치하는 회원을 찾을 수 없습니다."), //Id, 비밀번호 불일치
+    ACCOUNT_INSUFFICIENT_FUNDS(HttpStatus.CONFLICT, "잔액이 충분하지 않습니다.")
     ;
 
     private final HttpStatus status;

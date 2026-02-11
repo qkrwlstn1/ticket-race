@@ -1,5 +1,7 @@
 package com.jinsu.ticketrace.ticket.board.domain.entity;
 
+import com.jinsu.ticketrace.global.error.GlobalException;
+import com.jinsu.ticketrace.global.exception.TicketBoardErrorCode;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.ticket.board.domain.DTO.TicketArticleDTO;
 import jakarta.persistence.*;
@@ -77,5 +79,11 @@ public class GATicketBoard {
         return this;
     }
 
+    public void sale(){
+        if(quantity <= 0){
+            throw new GlobalException(TicketBoardErrorCode.TICKET_SOLD_OUT);
+        }
+        quantity -= 1;
+    }
 
 }

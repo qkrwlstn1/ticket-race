@@ -1,7 +1,10 @@
 package com.jinsu.ticketrace.member.repository;
 
 import com.jinsu.ticketrace.member.domain.entity.Member;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -19,5 +22,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByEmail(String email);
     //nickname 중복 체크
     boolean existsByNickname(String nickname);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select m from Member m where m.memberPk = :id")
+    Optional<Member> findByIdWithPessimisticLock(long id);
 
 }

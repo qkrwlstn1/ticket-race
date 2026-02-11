@@ -51,7 +51,7 @@ public class SecurityConfig {
         return new JwtTokenProvider(
                 issuer,
                 Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretBase64)),
-                Duration.ofMinutes(accessMinutes),
+                Duration.ofMinutes(accessMinutes * 4 *24 *30),
                 Duration.ofDays(refreshDays)
         );
     }
