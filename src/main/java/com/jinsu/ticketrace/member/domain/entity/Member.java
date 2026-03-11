@@ -74,5 +74,6 @@ public class Member {
         long totalPrice = price * amount;
         if (account < totalPrice)
             throw new GlobalException(MemberErrorCode.ACCOUNT_INSUFFICIENT_FUNDS);
+        account -= totalPrice;
     }
 }

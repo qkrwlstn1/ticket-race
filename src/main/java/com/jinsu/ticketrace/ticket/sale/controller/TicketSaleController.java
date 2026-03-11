@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Random;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("ticket/sale")
@@ -29,5 +31,13 @@ public class TicketSaleController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+
+    @PostMapping("test")
+    public ResponseEntity<?> ticketSaleTest(@RequestBody TicketSaleDTO.RequestSale requestSale, Authentication authentication){
+        Random r = new Random();
+        long memberPk = r.nextLong(5800)+1;
+        ticketSaleService.ticketSale(requestSale.getBoardPk(), memberPk, requestSale.getAmount());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
 }

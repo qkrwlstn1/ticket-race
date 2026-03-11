@@ -47,4 +47,5 @@ public class MemberService {
         authService.logout(member.getMemberPk(), accessToken);
         memberRepository.delete(member);
     }
+
 }

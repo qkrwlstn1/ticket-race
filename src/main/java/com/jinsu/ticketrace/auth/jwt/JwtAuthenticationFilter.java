@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         String token = auth.substring("Bearer ".length());
-        log.info("access token = {}",token);
+//        log.info("access token = {}",token);
         try {
             if(accessTokenBlacklistStore.isBlacklisted(token)) throw new JwtException("blacklisted access token");
 
@@ -42,8 +42,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (!"access".equals(typ)) throw new JwtException("not access token");
             // subject = memberPk
             String memberPk = claims.getSubject();
-            log.info("memberPk = {}", memberPk);
-            log.info(request.getRequestURI());
+//            log.info("memberPk = {}", memberPk);
+//            log.info(request.getRequestURI());
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(memberPk, token, List.of());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);

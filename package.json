@@ -1,0 +1,9 @@
+{
+  "name": "ticket-race-stresstest",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:stresstest": "node --test stresstest/ticketSale.test.mjs",
+    "k6:ticket-sale": "k6 run stresstest/ticketSale.js"
+  }
+}

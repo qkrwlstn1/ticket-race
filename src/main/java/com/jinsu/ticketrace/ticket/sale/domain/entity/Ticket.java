@@ -35,6 +35,7 @@ public class Ticket {
     private long refundedPrice;
 
     @Column(name = "refund_status")
+    @Builder.Default
     private RefundStatus refundStatus = RefundStatus.NONE;
 
     @ManyToOne(fetch = FetchType.LAZY)

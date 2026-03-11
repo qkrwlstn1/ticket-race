@@ -1,3 +1,10 @@
+server:
+  tomcat:
+    max-connections: 20000     # 8192 -> 상향
+    accept-count: 2000         # 100  -> 상향 (대기열)
+    threads:
+      max: 500                 # 200  -> 상향 (요청 처리 스레드)
+      min-spare: 50
 spring:
   application:
     name: ticketrace
@@ -11,19 +18,22 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
-        highlight_sql: true
-        use_sql_comments: true
+#        format_sql: true
+        format_sql: false
+#        highlight_sql: true
+        highlight_sql: false
+#        use_sql_comments: true
+        use_sql_comments: false
     show-sql: false
   data:
     redis:
       host: localhost
       port: 6379
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
-    org.hibernate.orm.jdbc.extract: TRACE
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
+#    org.hibernate.orm.jdbc.extract: TRACE
 springdoc:
   api-docs:
     path: /v3/api-docs
@@ -49,6 +59,22 @@ jwt:
   issuer: ticketrace
   access-minutes: 15
   refresh-days: 1
-
+# 그라파다 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: my-app
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
 
 
