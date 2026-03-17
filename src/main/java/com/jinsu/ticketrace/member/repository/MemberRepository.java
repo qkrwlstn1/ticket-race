@@ -4,6 +4,7 @@ import com.jinsu.ticketrace.member.domain.entity.Member;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -26,5 +27,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select m from Member m where m.memberPk = :id")
     Optional<Member> findByIdWithPessimisticLock(long id);
+
+    @Modifying
+    @Query("""
+            update Member m 
+            set m.account = m.account - :totalPrice 
+            where m.memberPk = :memberPk 
+                and m.account >= :totalPrice
+            """)
+    int decreaseAccount(long memberPk, long totalPrice);
 
 }

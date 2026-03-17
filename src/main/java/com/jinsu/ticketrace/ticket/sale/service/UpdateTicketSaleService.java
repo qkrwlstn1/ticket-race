@@ -31,9 +31,10 @@ public class UpdateTicketSaleService implements TicketSaleUseCase{
 
         if (quantityUpdated != 1) throw new GlobalException(TicketBoardErrorCode.TICKET_SOLD_OUT);
 
-        Member member = memberRepository.findByIdWithPessimisticLock(memberPk)
+        Member member = memberRepository.findById(memberPk)
                 .orElseThrow(() -> new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND));
-        member.buy(ticketBoard.getPrice(), amount);
+        int accountUpdated = memberRepository.decreaseAccount(memberPk, ticketBoard.getPrice() * amount);
+        if (accountUpdated != 1) throw new GlobalException(MemberErrorCode.ACCOUNT_INSUFFICIENT_FUNDS);
 
         Ticket ticket = Ticket.of(ticketBoard, member, amount);
         ticketRepository.save(ticket);
