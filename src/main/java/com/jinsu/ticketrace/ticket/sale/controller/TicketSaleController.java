@@ -1,9 +1,5 @@
 package com.jinsu.ticketrace.ticket.sale.controller;
 
-import com.jinsu.ticketrace.member.domain.entity.Member;
-import com.jinsu.ticketrace.member.validator.MemberValidator;
-import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
-import com.jinsu.ticketrace.ticket.board.validator.TicketBoardValidator;
 import com.jinsu.ticketrace.ticket.sale.domain.DTO.TicketSaleDTO;
 import com.jinsu.ticketrace.ticket.sale.service.TicketSaleService;
 import lombok.RequiredArgsConstructor;
