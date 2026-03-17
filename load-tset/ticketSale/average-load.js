@@ -13,8 +13,8 @@ const runId = Date.now();
 const fileName = `avg_load_${runId}`
 export const options = {
     stages : [
-        { duration: "1m", target : 60},
-        { duration: "30m", target : 60},
+        { duration: "1m", target : 80},
+        { duration: "30m", target : 80},
         {duration : "1m", target : 0},
     ],
     thresholds:{

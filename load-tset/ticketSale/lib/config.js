@@ -8,7 +8,7 @@ export const REQUEST_BODY = {
 
 export function buildHeaders(){
     const headers = {"Content-type" : "application/json",
-        "Authorization" : "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0aWNrZXRyYWNlIiwic3ViIjoiMSIsImlhdCI6MTc3MDgxNjI0NSwiZXhwIjoxNzczNDA4MjQ1LCJ0eXAiOiJhY2Nlc3MifQ.GzK95wcnFv9l_aRlqKILJ24nRFI3RtLKpKXL5Vy6XsxKKDbGTPCnz1T8im907-hluAAVL-JxOULiaOeBvOglgw",
+        "Authorization" : "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJ0aWNrZXRyYWNlIiwic3ViIjoiMSIsImlhdCI6MTc3MzMxMjY4NiwiZXhwIjoxNzk5MjMyNjg2LCJ0eXAiOiJhY2Nlc3MifQ.2T6o-N7d4ZVVnUm_IAAHCThBAjo8r1DLUB0QNY-Pc3LfF2Awvu-R7LImckUTtlKZgXvJxm-rdjGAiEgN3UBaRA",
     };
 
     return headers;
