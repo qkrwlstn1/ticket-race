@@ -30,4 +30,6 @@ public interface TicketBoardRepository extends JpaRepository<GATicketBoard, Long
             """)
     int decreaseQuantity(long ticketBoardPk, long amount);
 
+    Optional<Long> findPriceByBoardPk(long boardPk);
+
 }

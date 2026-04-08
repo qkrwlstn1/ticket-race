@@ -79,11 +79,11 @@ public class GATicketBoard {
         return this;
     }
 
-    public void sale(){
-        if(quantity <= 0){
+    public void sale(long amount){
+        if(quantity < amount){
             throw new GlobalException(TicketBoardErrorCode.TICKET_SOLD_OUT);
         }
-        quantity -= 1;
+        quantity -= amount;
     }
 
 }

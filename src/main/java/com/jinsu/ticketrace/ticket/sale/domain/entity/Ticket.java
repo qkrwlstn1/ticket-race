@@ -28,6 +28,9 @@ public class Ticket {
     @Column(name = "sale_date_time")
     private LocalDateTime saleDateTime;
 
+    @Column(name = "buy_request_id", nullable = false, unique = true, updatable = false)
+    private String buyRequestId;
+
     @Column(name = "amount")
     private long amount;
 
@@ -47,10 +50,11 @@ public class Ticket {
     private Member member;
 
 
-    public static Ticket of(GATicketBoard ticketBoard, Member member, long amount){
+    public static Ticket of(String purchaseRequestId, GATicketBoard ticketBoard, Member member, long amount, long refundedPrice){
         return Ticket.builder()
+                .buyRequestId(purchaseRequestId)
                 .amount(amount)
-                .refundedPrice(ticketBoard.getPrice())
+                .refundedPrice(refundedPrice)
                 .GATicketBoard(ticketBoard)
                 .member(member)
                 .build();

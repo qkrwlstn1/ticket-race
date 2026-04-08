@@ -1,18 +1,18 @@
 package support.config;
 
-import org.springframework.boot.test.context.TestConfiguration;
+import com.redis.testcontainers.RedisContainer;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
-import org.testcontainers.containers.GenericContainer;
+import org.springframework.context.annotation.Configuration;
 
-@TestConfiguration(proxyBeanMethods = false)
+@Configuration
 public class RedisConfig {
 
+    // Redis Testcontainer 정의
     @Bean
-    @ServiceConnection
-    GenericContainer<?> redisContainer(){
-        return  new GenericContainer<>("redis:7.2.5")
-                .withExposedPorts(6379);
+    @ServiceConnection(name = "redisContainer") // 적절한 이름을 추가합니다.
+    public RedisContainer redisContainer() {
+        return new RedisContainer("redis:latest") // 최신 또는 요구되는 Redis 버전을 사용하세요.
+                .withExposedPorts(6379); // Redis 기본 포트를 엽니다.
     }
-
 }

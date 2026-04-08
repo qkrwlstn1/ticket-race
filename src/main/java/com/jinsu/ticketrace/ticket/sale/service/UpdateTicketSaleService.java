@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-@Primary
+import java.util.UUID;
+
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -36,7 +38,7 @@ public class UpdateTicketSaleService implements TicketSaleUseCase{
         int accountUpdated = memberRepository.decreaseAccount(memberPk, ticketBoard.getPrice() * amount);
         if (accountUpdated != 1) throw new GlobalException(MemberErrorCode.ACCOUNT_INSUFFICIENT_FUNDS);
 
-        Ticket ticket = Ticket.of(ticketBoard, member, amount);
+        Ticket ticket = Ticket.of(UUID.randomUUID().toString(), ticketBoard, member, amount, ticketBoard.getPrice() * amount);
         ticketRepository.save(ticket);
     }
 }

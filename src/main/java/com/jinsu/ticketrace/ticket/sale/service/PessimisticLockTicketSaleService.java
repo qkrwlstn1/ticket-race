@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +36,10 @@ public class PessimisticLockTicketSaleService implements TicketSaleUseCase{
         GATicketBoard ticketBoard = optionalGATicketBoard
                 .orElseThrow(() -> new GlobalException(TicketBoardErrorCode.TICKET_BOARD_NOT_FOUND));
 
-        ticketBoard.sale();
+        ticketBoard.sale(amount);
         member.buy(ticketBoard.getPrice(), amount);
         
-        Ticket ticket = Ticket.of(ticketBoard, member, amount);
+        Ticket ticket = Ticket.of(UUID.randomUUID().toString(), ticketBoard, member, amount, ticketBoard.getPrice() * amount);
         ticketRepository.save(ticket);
     }
 }
