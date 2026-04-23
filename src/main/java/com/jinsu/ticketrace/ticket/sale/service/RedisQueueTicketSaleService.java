@@ -3,13 +3,11 @@ package com.jinsu.ticketrace.ticket.sale.service;
 import com.jinsu.ticketrace.global.error.GlobalException;
 import com.jinsu.ticketrace.global.exception.MemberErrorCode;
 import com.jinsu.ticketrace.global.exception.TicketBoardErrorCode;
-import com.jinsu.ticketrace.member.repository.MemberRepository;
 import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
 import com.jinsu.ticketrace.ticket.sale.repository.redis.TicketSaleRequestStore;
 import com.jinsu.ticketrace.ticket.sale.repository.redis.TicketSaleReserveResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -20,9 +18,8 @@ import java.util.UUID;
 public class RedisQueueTicketSaleService implements TicketSaleUseCase {
 
     private final TicketBoardRepository ticketBoardRepository;
-    private final MemberRepository memberRepository;
     private final TicketSaleRequestStore ticketSaleRequestStore;
-    private final StringRedisTemplate redisTemplate;
+    private final TicketSaleSnapshotService snapshotService; // 추가
 
     @Override
     public void ticketSale(long ticketBoardPk, long memberPk, long amount) {
@@ -37,62 +34,45 @@ public class RedisQueueTicketSaleService implements TicketSaleUseCase {
                 price
         );
 
-        TicketSaleReserveResult reserveResult = tryReserveWithSnapshotRecovery(command);
-        if (reserveResult == TicketSaleReserveResult.KEY_MISSING) {
-            rebuildSnapshot(ticketBoardPk, memberPk);
-            reserveResult = ticketSaleRequestStore.reserve(command);
+        TicketSaleReserveResult result = ticketSaleRequestStore.reserve(command);
+
+        // KEY_MISSING: DB에서 스냅샷을 재구성하고 단 1회 재시도
+        if (result == TicketSaleReserveResult.KEY_MISSING) {
+            result = rebuildAndRetry(command, ticketBoardPk, memberPk);
         }
 
+        handleResult(result);
+    }
 
-        if (reserveResult == TicketSaleReserveResult.SOLD_OUT) {
+    /**
+     * DB에서 재고·잔액을 읽어 Redis 키를 재구성한 뒤 reserve를 재시도합니다.
+     * SETNX를 사용하므로 동시에 여러 스레드가 진입해도 중복 세팅 없이 안전합니다.
+     */
+    private TicketSaleReserveResult rebuildAndRetry(
+            TicketSaleCommand command, long boardPk, long memberPk) {
+
+        snapshotService.rebuildInventorySnapshotIfAbsent(boardPk);
+        snapshotService.rebuildAccountSnapshotIfAbsent(memberPk);
+
+        TicketSaleReserveResult retryResult = ticketSaleRequestStore.reserve(command);
+
+        if (retryResult == TicketSaleReserveResult.KEY_MISSING) {
+            // 재구성 후에도 키가 없으면 시스템 이상 — IllegalStateException으로 상위에 알림
+            throw new IllegalStateException(
+                    "스냅샷 재구성 후에도 Redis 키 없음. boardPk=" + boardPk + ", memberPk=" + memberPk);
+        }
+        return retryResult;
+    }
+
+    private void handleResult(TicketSaleReserveResult result) {
+        if (result == TicketSaleReserveResult.SOLD_OUT) {
             throw new GlobalException(TicketBoardErrorCode.TICKET_SOLD_OUT);
         }
-        if (reserveResult == TicketSaleReserveResult.INSUFFICIENT_FUNDS) {
+        if (result == TicketSaleReserveResult.INSUFFICIENT_FUNDS) {
             throw new GlobalException(MemberErrorCode.ACCOUNT_INSUFFICIENT_FUNDS);
         }
-
-        if (reserveResult == TicketSaleReserveResult.KEY_MISSING) {
-//            snapshotInitializer.initSnapshot(ticketBoardPk, memberPk); // DB → Redis 동기화
-            reserveResult = ticketSaleRequestStore.reserve(command);   // 재시도
-            if (reserveResult == TicketSaleReserveResult.KEY_MISSING) {
-                throw new IllegalStateException("redis snapshot rebuild 후에도 키 없음");
-            }
-        }
+        // SUCCESS(1L) — 정상 처리
     }
 
-    private TicketSaleReserveResult tryReserveWithSnapshotRecovery(TicketSaleCommand command) {
-        TicketSaleReserveResult reserveResult = ticketSaleRequestStore.reserve(command);
-
-        int retries = 0;
-        while (reserveResult == TicketSaleReserveResult.KEY_MISSING && retries < 3) {
-            rebuildSnapshot(command.boardPk(), command.memberPk());
-            reserveResult = ticketSaleRequestStore.reserve(command);
-            retries++;
-        }
-
-        return reserveResult;
-    }
-
-
-    private void rebuildSnapshot(long boardPk, long memberPk) {
-        long quantity = ticketBoardRepository.findById(boardPk)
-                .orElseThrow(() -> new GlobalException(TicketBoardErrorCode.TICKET_BOARD_NOT_FOUND))
-                .getQuantity();
-
-        long account = memberRepository.findById(memberPk)
-                .orElseThrow(() -> new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND))
-                .getAccount();
-
-        redisTemplate.opsForValue().setIfAbsent(quantityKey(boardPk), String.valueOf(quantity));
-        redisTemplate.opsForValue().setIfAbsent(accountKey(memberPk), String.valueOf(account));
-    }
-
-    private String quantityKey(long boardPk) {
-        return "ticket:inventory:ga:" + boardPk + ":quantity";
-    }
-
-    private String accountKey(long memberPk) {
-        return "ticket:member:" + memberPk + ":account";
-    }
 
 }

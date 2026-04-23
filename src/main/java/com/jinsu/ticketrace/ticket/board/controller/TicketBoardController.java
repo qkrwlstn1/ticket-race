@@ -10,10 +10,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("ticket/board")
@@ -38,6 +43,21 @@ public class TicketBoardController {
         TicketArticleDTO.CreateArticleResponse createArticleResponse = ticketBoardService.CreateArticle(member, articleRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createArticleResponse);
+    }
+
+    @GetMapping("articles")
+    @Operation(
+            summary = "게시글 목록 조회",
+            description = "게시글 목록을 페이지 단위로 조회합니다",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "목록 조회 성공")
+            }
+    )
+    public ResponseEntity<Page<TicketArticleDTO.GetSummaryArticle>> getArticles(
+            @PageableDefault(size = 20, sort = "createDateTime", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+
+        return ResponseEntity.ok(ticketBoardService.getArticles(pageable));
     }
 
     @GetMapping("article/{boardId}")

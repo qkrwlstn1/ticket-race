@@ -98,12 +98,25 @@ public class TicketArticleDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class GetSummaryArticle{
+        private long boardPk;
         private String title;
-
+        private long price;
+        private long quantity;
         private LocalDateTime deadlineDate;
         private LocalDateTime createDate;
-
         private String memberNickname;
+
+        public static GetSummaryArticle of(GATicketBoard board) {
+            return GetSummaryArticle.builder()
+                    .boardPk(board.getBoardPk())
+                    .title(board.getTitle())
+                    .price(board.getPrice())
+                    .quantity(board.getQuantity())
+                    .deadlineDate(board.getDeadlineDateTime())
+                    .createDate(board.getCreateDateTime())
+                    .memberNickname(board.getMember().getNickname())
+                    .build();
+        }
     }
 
     @Getter

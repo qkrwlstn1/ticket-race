@@ -37,4 +37,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             """)
     int decreaseAccount(long memberPk, long totalPrice);
 
+    @Modifying
+    @Query("""
+            update Member m
+            set m.account = m.account + :refundAmount
+            where m.memberPk = :memberPk
+            """)
+    int increaseAccount(long memberPk, long refundAmount);
 }
