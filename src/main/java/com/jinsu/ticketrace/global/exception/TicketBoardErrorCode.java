@@ -1,7 +1,6 @@
 package com.jinsu.ticketrace.global.exception;
 
 import com.jinsu.ticketrace.global.error.ErrorCode;
-import com.jinsu.ticketrace.global.error.GlobalException;
 import org.springframework.http.HttpStatus;
 
 public enum TicketBoardErrorCode implements ErrorCode {

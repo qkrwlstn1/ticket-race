@@ -1,11 +1,6 @@
 package com.jinsu.ticketrace.ticket.sale.service;
 
-import com.jinsu.ticketrace.global.error.GlobalException;
-import com.jinsu.ticketrace.global.exception.MemberErrorCode;
-import com.jinsu.ticketrace.global.exception.TicketBoardErrorCode;
-import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.member.repository.MemberRepository;
-import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
 import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
 import com.jinsu.ticketrace.ticket.sale.domain.entity.Ticket;
 import com.jinsu.ticketrace.ticket.sale.repository.TicketRepository;

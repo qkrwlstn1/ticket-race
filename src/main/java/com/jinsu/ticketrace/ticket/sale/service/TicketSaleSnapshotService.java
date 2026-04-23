@@ -8,19 +8,33 @@ import com.jinsu.ticketrace.member.repository.MemberRepository;
 import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
 import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
 import com.jinsu.ticketrace.ticket.sale.repository.redis.TicketSaleRedisKeys;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class TicketSaleSnapshotService {
 
     private final StringRedisTemplate redisTemplate;
     private final TicketBoardRepository ticketBoardRepository;
     private final MemberRepository memberRepository;
+    private final DefaultRedisScript<Long> incrementIfPresentScript;
+
+    public TicketSaleSnapshotService(
+            StringRedisTemplate redisTemplate,
+            TicketBoardRepository ticketBoardRepository,
+            MemberRepository memberRepository,
+            @Qualifier("incrementIfPresentScript") DefaultRedisScript<Long> incrementIfPresentScript) {
+        this.redisTemplate = redisTemplate;
+        this.ticketBoardRepository = ticketBoardRepository;
+        this.memberRepository = memberRepository;
+        this.incrementIfPresentScript = incrementIfPresentScript;
+    }
 
     // ── 재고 스냅샷 ────────────────────────────────────────────────────────────
 
@@ -81,26 +95,27 @@ public class TicketSaleSnapshotService {
 
     /**
      * 환불 발생 시 Redis 잔액 키가 존재하면 환불액만큼 증가시킵니다.
-     * 키가 없으면 건드리지 않습니다 — 다음 구매 시 KEY_MISSING 경로로 DB에서 재구성됩니다.
+     * Lua 스크립트로 EXISTS + INCRBY를 원자적으로 처리합니다.
      */
     public void incrementAccountIfPresent(long memberPk, long amount) {
         String key = TicketSaleRedisKeys.accountKey(memberPk);
-        // hasKey + increment 는 원자적이지 않지만, 환불은 저빈도 작업이므로 허용 범위입니다.
-        // 높은 정합성이 필요하다면 Lua 스크립트로 교체하세요.
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
-            redisTemplate.opsForValue().increment(key, amount);
+        Long result = redisTemplate.execute(incrementIfPresentScript, List.of(key), String.valueOf(amount));
+        if (Long.valueOf(1L).equals(result)) {
             log.info("[Snapshot] 환불 잔액 증가 memberPk={}, +amount={}", memberPk, amount);
         }
     }
 
     /**
      * 환불 발생 시 Redis 재고 키가 존재하면 수량만큼 증가시킵니다.
+     * Lua 스크립트로 EXISTS + INCRBY를 원자적으로 처리합니다.
      */
     public void incrementInventoryIfPresent(long boardPk, long amount) {
         String key = TicketSaleRedisKeys.inventoryKey(boardPk);
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
-            redisTemplate.opsForValue().increment(key, amount);
+        Long result = redisTemplate.execute(incrementIfPresentScript, List.of(key), String.valueOf(amount));
+        if (Long.valueOf(1L).equals(result)) {
             log.info("[Snapshot] 환불 재고 증가 boardPk={}, +amount={}", boardPk, amount);
         }
     }
+
+
 }

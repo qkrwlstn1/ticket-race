@@ -1,6 +1,5 @@
 package com.jinsu.ticketrace.ticket.sale.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import com.jinsu.ticketrace.global.error.GlobalException;
 import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.member.repository.MemberRepository;
@@ -26,8 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(properties = "spring.task.scheduling.enabled=false")
 @ActiveProfiles("test")

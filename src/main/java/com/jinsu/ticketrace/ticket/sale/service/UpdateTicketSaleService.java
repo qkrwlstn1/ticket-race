@@ -11,7 +11,6 @@ import com.jinsu.ticketrace.ticket.sale.domain.entity.Ticket;
 import com.jinsu.ticketrace.ticket.sale.repository.TicketRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

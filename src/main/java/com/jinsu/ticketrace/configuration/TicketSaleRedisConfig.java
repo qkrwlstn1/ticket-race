@@ -85,6 +85,26 @@ public class TicketSaleRedisConfig {
     }
 
     /**
+     * 키가 존재할 때만 원자적으로 증가 (환불 시 Redis 스냅샷 동기화용)
+     * KEYS[1] = target key (inventory or account)
+     * ARGV[1] = amount to increment
+     * return 1 = 증가 성공, 0 = 키 없음 (건드리지 않음)
+     */
+    @Bean
+    public DefaultRedisScript<Long> incrementIfPresentScript() {
+        DefaultRedisScript<Long> script = new DefaultRedisScript<>();
+        script.setScriptText("""
+                if redis.call('EXISTS', KEYS[1]) == 0 then
+                    return 0
+                end
+                redis.call('INCRBY', KEYS[1], ARGV[1])
+                return 1
+                """);
+        script.setResultType(Long.class);
+        return script;
+    }
+
+    /**
      * processing 에서 제거 후 queue 로 복귀
      * KEYS[1] = queue key
      * KEYS[2] = processing key
