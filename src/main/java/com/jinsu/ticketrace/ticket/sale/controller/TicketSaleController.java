@@ -28,12 +28,6 @@ public class TicketSaleController {
     }
 
 
-    @PostMapping("test")
-    public ResponseEntity<?> ticketSaleTest(@RequestBody TicketSaleDTO.RequestSale requestSale, Authentication authentication){
-        Random r = new Random();
-        long memberPk = r.nextLong(5800)+1;
-        ticketSaleService.ticketSale(requestSale.getBoardPk(), memberPk, requestSale.getAmount());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+
 
 }

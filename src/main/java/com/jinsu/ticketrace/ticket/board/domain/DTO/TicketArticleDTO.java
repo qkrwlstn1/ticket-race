@@ -111,7 +111,7 @@ public class TicketArticleDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ModifyArticleRequest{
-        @NotBlank
+        @Min(0)
         private long boardPk;
         @NotBlank
         @Size(max = 255)

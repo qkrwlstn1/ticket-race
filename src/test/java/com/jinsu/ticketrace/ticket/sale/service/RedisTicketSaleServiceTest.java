@@ -137,6 +137,67 @@ class RedisTicketSaleServiceTest {
         assertEquals(85_000, savedBuyer.getAccount());
         assertEquals(2, ticketRepository.count());
     }
+    @Test
+    @DisplayName("1만 동시 요청에서도 오버셀 없이 선점되고 최종 상태가 일관된다")
+    void ticketSale_concurrency_10000Requests() throws Exception {
+        Member seller = saveMember("seller-10k", 0);
+        Member buyer = saveMember("buyer-10k", 20_000_000);
+        GATicketBoard board = saveBoard(seller, 2_500, 1_000);
+
+        initializeRedisSnapshot(board, buyer);
+
+        int requestCount = 10_000;
+        int poolSize = 200;
+
+        ExecutorService executorService = Executors.newFixedThreadPool(poolSize);
+        CountDownLatch ready = new CountDownLatch(poolSize); // 10000 아님
+        CountDownLatch start = new CountDownLatch(1);
+        CountDownLatch done = new CountDownLatch(requestCount);
+
+        AtomicInteger successCount = new AtomicInteger();
+        AtomicInteger unexpectedFailureCount = new AtomicInteger();
+
+        for (int i = 0; i < requestCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    ready.countDown();
+                    start.await();
+
+                    ticketSaleService.ticketSale(board.getBoardPk(), buyer.getMemberPk(), 1);
+                    successCount.incrementAndGet();
+
+                } catch (GlobalException ignored) {
+                    // sold out
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (RuntimeException e) {
+                    unexpectedFailureCount.incrementAndGet();
+                } finally {
+                    done.countDown();
+                }
+            });
+        }
+
+        assertTrue(ready.await(10, TimeUnit.SECONDS));
+        start.countDown();
+        assertTrue(done.await(60, TimeUnit.SECONDS));
+        executorService.shutdownNow();
+
+        ticketSalePersistenceWorker.drainQueue();
+
+        GATicketBoard savedBoard = ticketBoardRepository.findById(board.getBoardPk()).orElseThrow();
+        Member savedBuyer = memberRepository.findById(buyer.getMemberPk()).orElseThrow();
+
+        assertEquals(2_500, successCount.get());
+        assertEquals(0, unexpectedFailureCount.get());
+        assertEquals("0", redisQuantity(board.getBoardPk()));
+        assertEquals("17500000", redisAccount(buyer.getMemberPk()));
+
+        assertEquals(0, savedBoard.getQuantity());
+        assertEquals(17_500_000, savedBuyer.getAccount());
+        assertEquals(2_500, ticketRepository.count());
+        assertEquals(0L, queueSize());
+    }
 
     @Test
     @DisplayName("동시 요청은 Redis에서 선점되고 워커가 순차 영속화해 오버셀 없이 반영된다")
@@ -239,5 +300,15 @@ class RedisTicketSaleServiceTest {
     private long queueSize() {
         Long size = redisTemplate.opsForList().size("ticket:sale:queue");
         return size == null ? 0L : size;
+    }
+    private void initializeRedisSnapshot(GATicketBoard board, Member buyer) {
+        redisTemplate.opsForValue().set(
+                "ticket:inventory:ga:" + board.getBoardPk() + ":quantity",
+                String.valueOf(board.getQuantity())
+        );
+        redisTemplate.opsForValue().set(
+                "ticket:member:" + buyer.getMemberPk() + ":account",
+                String.valueOf(buyer.getAccount())
+        );
     }
 }

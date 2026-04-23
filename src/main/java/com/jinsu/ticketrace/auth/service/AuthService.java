@@ -19,7 +19,7 @@ public class AuthService {
     private final RefreshTokenStore refreshTokenStore;
     private final AccessTokenBlacklistStore accessTokenBlacklistStore;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public TokenResponse signIn(Member member){
         String access = jwtTokenProvider.createAccessToken(member.getMemberPk());
         JwtTokenProvider.RefreshTokenBundle refresh = jwtTokenProvider.createRefreshToken(member.getMemberPk());
