@@ -1,7 +1,7 @@
 package com.jinsu.ticketrace.ticket.board.repository;
 
 import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
-import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.repository.query.Param;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
