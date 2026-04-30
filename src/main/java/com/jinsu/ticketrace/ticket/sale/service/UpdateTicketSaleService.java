@@ -9,7 +9,7 @@ import com.jinsu.ticketrace.ticket.board.domain.entity.GATicketBoard;
 import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
 import com.jinsu.ticketrace.ticket.sale.domain.entity.Ticket;
 import com.jinsu.ticketrace.ticket.sale.repository.TicketRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

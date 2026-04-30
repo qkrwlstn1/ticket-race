@@ -5,9 +5,9 @@ import com.jinsu.ticketrace.ticket.board.repository.TicketBoardRepository;
 import com.jinsu.ticketrace.ticket.sale.domain.entity.Ticket;
 import com.jinsu.ticketrace.ticket.sale.repository.TicketRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
