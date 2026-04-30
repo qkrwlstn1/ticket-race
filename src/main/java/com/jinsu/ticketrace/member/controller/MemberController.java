@@ -129,5 +129,38 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("me/charge")
+    @Operation(
+            summary = "잔액 충전",
+            description = "결제 게이트웨이를 통해 잔액을 충전합니다. 충전 성공 시 PG 거래 ID와 충전 후 잔액을 반환합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "충전 성공"),
+                    @ApiResponse(responseCode = "400", description = "유효하지 않은 충전 금액"),
+                    @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+                    @ApiResponse(responseCode = "502", description = "결제 게이트웨이 오류")
+            }
+    )
+    public ResponseEntity<MemberDTO.ChargeResponse> charge(
+            @RequestBody @Valid MemberDTO.ChargeRequest request,
+            Authentication authentication) {
+        long memberPk = Long.parseLong(authentication.getName());
+        MemberDTO.ChargeResponse response = memberService.charge(memberPk, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("me/account")
+    @Operation(
+            summary = "잔액 조회",
+            description = "현재 잔액을 조회합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "조회 성공"),
+                    @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음")
+            }
+    )
+    public ResponseEntity<MemberDTO.Account> getAccount(Authentication authentication) {
+        long memberPk = Long.parseLong(authentication.getName());
+        return ResponseEntity.ok(memberService.getAccount(memberPk));
+    }
+
 
 }

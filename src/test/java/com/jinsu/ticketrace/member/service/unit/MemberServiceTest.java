@@ -5,6 +5,7 @@ import com.jinsu.ticketrace.member.domain.entity.Member;
 import com.jinsu.ticketrace.member.repository.MemberRepository;
 import com.jinsu.ticketrace.member.service.MemberService;
 import com.jinsu.ticketrace.member.validator.MemberValidator;
+import com.jinsu.ticketrace.ticket.payment.PaymentGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,10 @@ class MemberServiceTest {
     MemberValidator memberValidator;
     @Mock
     AuthService authService;
+    @Mock
+    PaymentGateway paymentGateway;
+    @Mock
+    TransactionTemplate transactionTemplate;
 
     PasswordEncoder passwordEncoder;
     MemberService memberService;
@@ -45,7 +51,14 @@ class MemberServiceTest {
         encoders.put(idForEncode, new BCryptPasswordEncoder(4)); // 테스트 환경에선 cost를 의도적으로 낮춤(최소 4)
 
         passwordEncoder = new DelegatingPasswordEncoder(idForEncode, encoders);
-        memberService = new MemberService(memberRepository, passwordEncoder, memberValidator, authService);
+        memberService = new MemberService(
+                memberRepository,
+                passwordEncoder,
+                memberValidator,
+                authService,
+                paymentGateway,
+                transactionTemplate
+        );
     }
 
     @Tag("password Encoding")

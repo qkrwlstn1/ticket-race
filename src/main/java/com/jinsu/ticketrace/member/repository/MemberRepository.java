@@ -40,8 +40,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying
     @Query("""
             update Member m
-            set m.account = m.account + :refundAmount
+            set m.account = m.account + :amount
             where m.memberPk = :memberPk
             """)
-    int increaseAccount(long memberPk, long refundAmount);
+    int increaseAccount(long memberPk, long amount);
 }
